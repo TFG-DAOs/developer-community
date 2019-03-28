@@ -4,6 +4,7 @@ import "@aragon/os/contracts/apps/AragonApp.sol";
 import "@aragon/os/contracts/lib/math/SafeMath.sol";
 
 contract CounterApp is AragonApp {
+    //provee operaciones aritmeticas basicas entre uint256 que no posee Solidity
     using SafeMath for uint256;
 
     /// Events
