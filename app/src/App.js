@@ -1,25 +1,36 @@
 import React from 'react'
 import { useAragonApi } from '@aragon/api-react'
-import { Main, Button } from '@aragon/ui'
+import { Main, Button, TextInput } from '@aragon/ui'
 import styled from 'styled-components'
-
+import { toHex } from 'web3-utils'
 function App() {
   /*
   api contiene todos los metodos del contrato
   appState es el estado que devuelve la ultima funcion redux que se ha ejecutado.
   */
+  let _profile
   const { api, appState } = useAragonApi()
-  const { count, syncing } = appState
+  const { profiles, syncing } = appState
   return (
     <Main>
       <BaseLayout>
         {syncing && <Syncing />}
-        <Count>Count: {count}</Count>
+        <ul>
+          {profiles.map(profile => (
+            <li key={profile}>{profile}</li>
+          ))}
+        </ul>
         <Buttons>
           {/* Hay que ponerlo entre comillas incluso si es una variable numerica. */}
-          <Button mode="secondary" onClick={() => api.addProfile("0x50657266696c31")}>
-            Decrement
+          <Button
+            mode="secondary"
+            onClick={() => {
+              api.addProfile(toHex(_profile.value))
+            }}
+          >
+            Add profile
           </Button>
+          <TextInput ref={input => (_profile = input)} />
           <Button mode="secondary" onClick={() => api.increment(1)}>
             Increment
           </Button>
@@ -35,10 +46,6 @@ const BaseLayout = styled.div`
   justify-content: center;
   height: 100vh;
   flex-direction: column;
-`
-
-const Count = styled.h1`
-  font-size: 30px;
 `
 
 const Buttons = styled.div`

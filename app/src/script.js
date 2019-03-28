@@ -1,16 +1,14 @@
 import '@babel/polyfill'
 import { of } from 'rxjs'
 import AragonApi from '@aragon/api'
-
+import { toUtf8 } from 'web3-utils'
 const INITIALIZATION_TRIGGER = Symbol('INITIALIZATION_TRIGGER')
 
 const api = new AragonApi()
 
 const reducer = (state, event) => {
   let newState
-  const { count } = state
-  console.log(state, event);
-  
+  console.log(state, event)
   switch (event.event) {
     case INITIALIZATION_TRIGGER:
       newState = {
@@ -20,9 +18,10 @@ const reducer = (state, event) => {
       }
       break
     case 'AddProfile':
+      console.log(toUtf8(event.returnValues.profile))
       newState = {
         ...state,
-        profiles: [...state.profiles, event.returnValues.profile]
+        profiles: [...state.profiles, toUtf8(event.returnValues.profile)]
       }
       break
     case 'RemoveProfile':
@@ -31,7 +30,7 @@ const reducer = (state, event) => {
     default:
       newState = state
   }
-
+  console.log(newState)
   return newState
 }
 
