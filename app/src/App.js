@@ -31,8 +31,14 @@ function App() {
             Add profile
           </Button>
           <TextInput ref={input => (_profile = input)} />
-          <Button mode="secondary" onClick={() => api.increment(1)}>
-            Increment
+
+          <Button
+           mode="secondary" 
+           onClick={() => {
+           api.removeProfile(toHex(_profile.value))
+          }}
+          >
+            Remove Profile
           </Button>
         </Buttons>
       </BaseLayout>

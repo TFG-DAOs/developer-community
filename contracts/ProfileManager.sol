@@ -8,6 +8,7 @@ contract ProfileManager is AragonApp {
 
     //Profile events.
     event AddProfile(address indexed entity, bytes32 profile);
+    event RemoveProfile(address indexed entity, bytes32 profile);
 
     //event RemoveProfile(address indexed entity, bytes32 profile);
 
@@ -63,6 +64,7 @@ contract ProfileManager is AragonApp {
             }
             i++;
         }
+        emit RemoveProfile(msg.sender, profileToRemove);
     }
 
     function assignProfileToMember(address member, bytes32 profile) public {

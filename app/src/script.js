@@ -19,13 +19,33 @@ const reducer = (state, event) => {
       break
     case 'AddProfile':
       console.log(toUtf8(event.returnValues.profile))
+      
       newState = {
         ...state,
         profiles: [...state.profiles, toUtf8(event.returnValues.profile)]
       }
       break
     case 'RemoveProfile':
-      newState = { count: count - parseInt(event.returnValues.step) }
+    
+      const remove = (state, keyProfile) => { 
+        const pos = state.findIndex(function(element) {
+          return element == keyProfile
+        })
+        state.splice(pos,1)
+        /*const result = state.filter(profile => {
+          console.log(profile, "========",keyProfile)
+         
+           
+          return profile != keyProfile
+        })*/
+        console.log("RESULTADOOOOOOOO",state)
+        
+        return state
+      }
+      newState = { 
+      ...state,
+      profiles : remove(state.profiles, toUtf8(event.returnValues.profile) ),  
+      }
       break
     default:
       newState = state
@@ -48,4 +68,4 @@ api.store((state, event) => {
   ]
 )
 
-funct
+
