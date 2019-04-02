@@ -56,8 +56,9 @@ function App() {
 
        
       </BaseLayout>
-      <SidePanel title="Menu" opened={opened} onClose={() => setOpened(false)}>
-        <TextInput ref={input => (_profile = input)} />
+      <SidePanel title="New Profile" opened={opened} onClose={() => setOpened(false)}>
+        <SidePanelContent>
+        <TextInput placeholder="Profile Name" ref={input => (_profile = input)} />
         <Button
           style={{ height: "40PX", marginleft: "" }}
           mode="secondary"
@@ -67,7 +68,9 @@ function App() {
         >
           Add profile
         </Button>
+        </SidePanelContent>
       </SidePanel>
+      
     </Main>
   );
 }
@@ -78,8 +81,14 @@ const BaseLayout = styled.div`
   height: 100vh;
   flex-direction: row;
 `;
+
+const SidePanelContent = styled.div`
+  margin-top:100px;
+  display: flex;
+  flex-direction: column;
+`
 const CardContent = styled.div`
-  margin-top: 100px;
+  margin-top: 200px;
   text-align: center;
 `;
 const Buttons = styled.div`
