@@ -2,8 +2,16 @@ import React from "react";
 import { useState } from "react";
 
 import { useAragonApi } from "@aragon/api-react";
-import { Main, Button, TextInput, TabBar, Card, SidePanel} from "@aragon/ui";
-import SideBar from './SideBar';
+import {
+  Main,
+  Button,
+  TextInput,
+  TabBar,
+  Card,
+  SidePanel,
+  IconCross
+} from "@aragon/ui";
+import SideBar from "./SideBar";
 import styled from "styled-components";
 import { toHex } from "web3-utils";
 function App() {
@@ -14,54 +22,52 @@ function App() {
   let _profile;
   const { api, appState } = useAragonApi();
   const { profiles, syncing } = appState;
+  const [opened, setOpened] = useState(false);
+
   const open = new Boolean(false);
-  
-  return ( 
+
+  return (
     <Main>
       <BaseLayout>
         {syncing && <Syncing />}
-        
-        <Card style={{ height: '100%',width: '300px' }}>
-        <ul>
-          {profiles.map(profile => (
-            <li key={profile}>{profile}</li>            
-          ))}
-           
-        </ul>
-        
-        <Button style={{ height: '40PX'}}
-            mode="strong"
-            
-          >
-            New profile
-          </Button>
-        <Button style={{ height: '40PX'}}
-            mode="secondary"
-            onClick={() => {
-              api.addProfile(toHex(_profile.value));
-            }}
-          >
-            Add profile
-          </Button>
-            
-          <TextInput ref={input => (_profile = input)} />
-          
-          </Card>
-        
-        <Buttons>
-          {/* Hay que ponerlo entre comillas incluso si es una variable numerica. */}
-          
 
-          <Button  style={{ height: '40PX'}}
-            mode="secondary"
-            onClick={() => {
-              api.removeProfile(toHex(_profile.value));
-            }}
-          >
-            Remove Profile
-          </Button>
-        </Buttons>
+        <Card style={{ height: "100%", width: "300px" }}>
+          <CardContent>
+            <ul>
+              {profiles.map(profile => (
+                <li key={profile}>
+                  {profile}
+                  <Button
+                    
+                    onClick={() => {
+                      api.removeProfile(toHex(profile));
+                    }}
+                  >
+                    <IconCross />
+                  </Button>
+                </li>
+              ))}
+            </ul>
+            <Button mode="strong" onClick={() => setOpened(true)}>
+              New profile
+            </Button>
+          </CardContent>
+        </Card>
+
+       
       </BaseLayout>
+      <SidePanel title="Menu" opened={opened} onClose={() => setOpened(false)}>
+        <TextInput ref={input => (_profile = input)} />
+        <Button
+          style={{ height: "40PX", marginleft: "" }}
+          mode="secondary"
+          onClick={() => {
+            api.addProfile(toHex(_profile.value));
+          }}
+        >
+          Add profile
+        </Button>
+      </SidePanel>
     </Main>
   );
 }
@@ -72,7 +78,10 @@ const BaseLayout = styled.div`
   height: 100vh;
   flex-direction: row;
 `;
-
+const CardContent = styled.div`
+  margin-top: 100px;
+  text-align: center;
+`;
 const Buttons = styled.div`
   display: grid;
   grid-auto-flow: column;
