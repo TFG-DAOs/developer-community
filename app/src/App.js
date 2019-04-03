@@ -9,22 +9,32 @@ import {
   TabBar,
   Card,
   SidePanel,
-  IconCross
+  IconCross,
+  DropDown
 } from "@aragon/ui";
 import SideBar from "./SideBar";
 import styled from "styled-components";
 import { toHex } from "web3-utils";
+
 function App() {
   /*
   api contiene todos los metodos del contrato
   appState es el estado que devuelve la ultima funcion redux que se ha ejecutado.
   */
-  let _profile;
+  let _profile, _finalPofile, _initialProfile, _timeCondition, _contributionCondition;
   const { api, appState } = useAragonApi();
-  const { profiles, syncing } = appState;
+  const { /*timeCondition, contributionCondition ,*/profiles, syncing } = appState;
   const [opened, setOpened] = useState(false);
 
-  const open = new Boolean(false);
+  /* <DropDown style={{ height: "40PX", width: "200px" }}
+              items={profiles}
+              active={this.newState.activedItem}
+              onChange={this.setState({activedItem: index})}
+              
+            />
+            <DropDown style={{ height: "40PX", width: "200px" }}
+              items={profiles}
+            />*/
 
   return (
     <Main>
@@ -54,58 +64,80 @@ function App() {
           </CardContent>
         </Card>
 
-        <Button onClick={() => {
-          api.addTransition(toHex("aa"), toHex("ss"), 1, 10);
-        }}
-        >Add Transition
-        </Button>
+
+        <Card className="padded" width="100%" height="100%">
+          <form onSubmit={e => e.preventDefault()}>
+            <text>FinalPofile</text>
+            <TextInput style={{ height: "40PX", width: "200px", marginLeft: "5px", marginRight: "5px" }} type="text" ref={input => (_finalPofile = input)}/>
+            <text>InitialProfile</text>
+            <TextInput style={{ height: "40PX", width: "200px", marginLeft: "5px", marginRight: "5px" }} type="text" ref={input => (_initialProfile = input)} />
+            <text>Time(months)</text>
+            <TextInput style={{ height: "40PX", width: "200px", marginLeft: "5px", marginRight: "5px" }} type="number" ref={input => (_timeCondition = input)} />
+            <text>Contributions</text>
+            <TextInput style={{ height: "40PX", width: "200px", marginLeft: "5px", marginRight: "5px" }} type="number" ref={input => (_contributionCondition = input)} />
+
+              <Buttons>
+                <Button style={{ height: "40PX", marginleft: "" }} mode="strong" onClick={() => {
+                  //alert(toHex(_finalPofile));
+                  api.addTransition(toHex(_finalPofile.value), toHex(_initialProfile.value), _timeCondition.value, _contributionCondition.value);
+                }}>
+                  Add Transition</Button>
+                <Button style={{ height: "40PX", marginleft: "" }} type="button" mode="secondary" onClick={e => handleSubmit(false)}>
+                  Cancel
+              </Button>
+              </Buttons>
+          </form>
+        </Card>
       </BaseLayout>
-      <SidePanel title="New Profile" opened={opened} onClose={() => setOpened(false)}>
-        <SidePanelContent>
-          <TextInput placeholder="Profile Name" ref={input => (_profile = input)} />
-          <Button
-            style={{ height: "40PX", marginleft: "" }}
-            mode="secondary"
-            onClick={() => {
-              api.addProfile(toHex(_profile.value));
-            }}
-          >
-            Add profile
+        <SidePanel title="New Profile" opened={opened} onClose={() => setOpened(false)}>
+          <SidePanelContent>
+            <TextInput placeholder="Profile Name" ref={input => (_profile = input)} />
+            <Button
+              style={{ height: "40PX", marginleft: "" }}
+              mode="secondary"
+              onClick={() => {
+                api.addProfile(toHex(_profile.value));
+              }}
+            >
+              Add profile
         </Button>
-        </SidePanelContent>
-      </SidePanel>
+          </SidePanelContent>
+        </SidePanel>
 
     </Main>
-  );
-}
-
-const BaseLayout = styled.div`
-  display: flex;
-
-  height: 100vh;
-  flex-direction: row;
-`;
-
-const SidePanelContent = styled.div`
-  margin-top:100px;
-  display: flex;
-  flex-direction: column;
-`
-const CardContent = styled.div`
-  margin-top: 200px;
-  text-align: center;
-`;
-const Buttons = styled.div`
-  display: grid;
-  grid-auto-flow: column;
-  grid-gap: 40px;
-  margin-top: 20px;
-`;
-
-const Syncing = styled.div.attrs({ children: "Syncing…" })`
-  position: absolute;
-  top: 15px;
-  right: 20px;
-`;
-
-export default App;
+      );
+    }
+    
+    const BaseLayout = styled.div`
+      display: flex;
+      height: 100vh;
+      flex-direction: row;
+  TextInput {
+        height: 60px;
+    }
+  
+  `;
+  
+  const SidePanelContent = styled.div`
+    margin-top:100px;
+    display: flex;
+    flex-direction: column;
+  `
+  const CardContent = styled.div`
+    margin-top: 200px;
+    text-align: center;
+  `;
+  const Buttons = styled.div`
+    display: grid;
+    grid-auto-flow: column;
+    grid-gap: 40px;
+    margin-top: 20px;
+  `;
+  
+const Syncing = styled.div.attrs({children: "Syncing…" })`
+        position: absolute;
+        top: 15px;
+        right: 20px;
+      `;
+      
+      export default App;
