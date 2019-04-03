@@ -38,7 +38,7 @@ function App() {
                 <li key={profile}>
                   {profile}
                   <Button
-                    
+
                     onClick={() => {
                       api.removeProfile(toHex(profile));
                     }}
@@ -54,23 +54,27 @@ function App() {
           </CardContent>
         </Card>
 
-       
+        <Button onClick={() => {
+          api.addTransition(toHex("aa"), toHex("ss"), 1, 10);
+        }}
+        >Add Transition
+        </Button>
       </BaseLayout>
       <SidePanel title="New Profile" opened={opened} onClose={() => setOpened(false)}>
         <SidePanelContent>
-        <TextInput placeholder="Profile Name" ref={input => (_profile = input)} />
-        <Button
-          style={{ height: "40PX", marginleft: "" }}
-          mode="secondary"
-          onClick={() => {
-            api.addProfile(toHex(_profile.value));
-          }}
-        >
-          Add profile
+          <TextInput placeholder="Profile Name" ref={input => (_profile = input)} />
+          <Button
+            style={{ height: "40PX", marginleft: "" }}
+            mode="secondary"
+            onClick={() => {
+              api.addProfile(toHex(_profile.value));
+            }}
+          >
+            Add profile
         </Button>
         </SidePanelContent>
       </SidePanel>
-      
+
     </Main>
   );
 }

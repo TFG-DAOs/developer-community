@@ -9,6 +9,7 @@ contract ProfileManager is AragonApp {
     //Profile events.
     event AddProfile(address indexed entity, bytes32 profile);
     event RemoveProfile(address indexed entity, bytes32 profile);
+    event AddTransition(address indexed entity, bytes32 initialProfile, bytes32 finalProfile, uint256 timeCondition, uint256 contributionCondition);
 
     //event RemoveProfile(address indexed entity, bytes32 profile);
 
@@ -84,7 +85,7 @@ contract ProfileManager is AragonApp {
         transitionRegister[finalProfile][initialProfile].initToFinalProfileExists = true;
         transitionRegister[finalProfile][initialProfile].requestedTime = timeCondition;
         transitionRegister[finalProfile][initialProfile].requestedContributions = contributionCondition;
-
+        emit AddTransition(msg.sender, finalProfile, initialProfile, timeCondition,contributionCondition);
     }
 
     function removeTransition(bytes32 initialProfile, bytes32 finalProfile) public {
