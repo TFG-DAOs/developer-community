@@ -14,7 +14,8 @@ const reducer = (state, event) => {
       newState = {
         profiles: [],
         transitions: {},
-        members: {}
+        members: {},
+        membersMap: new Map()
       }
         
 
@@ -73,7 +74,22 @@ const reducer = (state, event) => {
           },
         },
     }
-    break
+      break
+    case "AddMemmber":
+      newState.membersMap.set(event.returnValues.member, {
+        profile: event.returnValues.profile,
+        creationDate: event.returnValues.creationDate,
+        exists: true,
+        contributions: event.returnType.contributions
+      });
+      break;
+    break;
+    case 'AssignProfileToMember':
+      newState = {
+        ...state
+      }
+      newState.membersMap.set(event.returnValues.member, event.returnType.profile)
+      break
     default:
       newState = state
   }

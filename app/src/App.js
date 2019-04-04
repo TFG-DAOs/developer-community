@@ -61,6 +61,17 @@ function App() {
             <Button mode="strong" onClick={() => setOpened(true)}>
               New profile
             </Button>
+            <hr></hr>
+            <Button mode="strong" onClick={() => {
+              api.addMember('0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb', toHex('profile1'), 35, 45)
+            }}>
+              Add member
+            </Button>
+            <Button mode="strong" onClick={() => {
+              api.assignProfileToMember('0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb', toHex('profile2'))
+            }}>
+              Assign profile to membere
+            </Button>
           </CardContent>
         </Card>
 
