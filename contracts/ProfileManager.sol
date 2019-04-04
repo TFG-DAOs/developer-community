@@ -22,7 +22,7 @@ contract ProfileManager is AragonApp {
     struct Member {
         bytes32 profile;
         uint256 creationDate;
-        bool exists;
+        //bool exists;
         //just for testing purposes
         uint256 contributions;
     }
@@ -52,7 +52,7 @@ contract ProfileManager is AragonApp {
         members[member].profile = profile;
         members[member].creationDate = creationDate;
         members[member].contributions = contributions;
-        members[member].exists = true;
+        //members[member].exists = true;
 
         emit AddMember(msg.sender, member, profile, creationDate, contributions);
 
@@ -88,7 +88,7 @@ contract ProfileManager is AragonApp {
         members[member].profile = "0x50657266696c31";
         members[member].creationDate = 10;
         members[member].contributions = 10;
-        members[member].exists = true;
+       // members[member].exists = true;
 
         //check if new profile can be assign to member given his current profile.
         bytes32 memberProfile = members[member].profile;

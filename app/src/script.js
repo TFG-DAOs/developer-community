@@ -15,9 +15,9 @@ const reducer = (state, event) => {
         profiles: [],
         transitions: {},
         members: {},
-        membersMap: new Map()
+        //membersMap: new Map()
       }
-        
+
 
 
       break
@@ -52,13 +52,13 @@ const reducer = (state, event) => {
       }
       break
     case 'AddTransition':
-     
+
       const finalProfile = toUtf8(event.returnValues.finalProfile);
       const initialProfile = toUtf8(event.returnValues.initialProfile);
-      const timeCondition =  event.returnValues.timeCondition;
-      const contributionCondition =  event.returnValues.contributionCondition;
+      const timeCondition = event.returnValues.timeCondition;
+      const contributionCondition = event.returnValues.contributionCondition;
       const open = true;
-      const conditions = { open, timeCondition, contributionCondition}
+      const conditions = { open, timeCondition, contributionCondition }
       console.log(initialProfile)
       console.log(finalProfile)
       console.log(timeCondition)
@@ -73,22 +73,44 @@ const reducer = (state, event) => {
             [initialProfile]: conditions,
           },
         },
-    }
+      }
       break
-    case "AddMemmber":
-      newState.membersMap.set(event.returnValues.member, {
-        profile: event.returnValues.profile,
-        creationDate: event.returnValues.creationDate,
-        exists: true,
-        contributions: event.returnType.contributions
-      });
-      break;
-    break;
+    case 'AddMember':
+      const _member = event.returnValues.member;
+      const _profile = toUtf8(event.returnValues.profile);
+      //const _exist = true;
+      const _creationDate = event.returnValues.creationDate;
+      const _contributions = event.returnValues.contributions;
+      console.log(_member);
+      console.log(_profile);
+      console.log(_creationDate);
+      console.log(_contributions);
+
+      newState = {
+        ...state,
+        members: {
+          ...state.members,
+          [member]: _member,
+          [profile]: _profile,
+          [creationDate]: _creationDate,
+          //[exist]: _exist,
+          [contributions]: _contributions,
+        }
+      }
+      /*
+     newState.membersMap.set(event.returnValues.member, {
+       profile: event.returnValues.profile,
+       creationDate: event.returnValues.creationDate,
+       exists: true,
+       contributions: event.returnType.contributions
+     });
+     */
+      break
     case 'AssignProfileToMember':
       newState = {
-        ...state
+        ...state,
       }
-      newState.membersMap.set(event.returnValues.member, event.returnType.profile)
+      //newState.membersMap.set(event.returnValues.member, event.returnType.profile)
       break
     default:
       newState = state

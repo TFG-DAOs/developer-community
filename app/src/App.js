@@ -63,12 +63,12 @@ function App() {
             </Button>
             <hr></hr>
             <Button mode="strong" onClick={() => {
-              api.addMember('0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb', toHex('profile1'), 35, 45)
+              api.addMember('0x74404792c88a0FaDb9f00b2b852046dbaDDA3E44', toHex('aa'), 35, 45)
             }}>
               Add member
             </Button>
             <Button mode="strong" onClick={() => {
-              api.assignProfileToMember('0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb', toHex('profile2'))
+              api.assignProfileToMember('0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb', toHex('ss'))
             }}>
               Assign profile to membere
             </Button>
