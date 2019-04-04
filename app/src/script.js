@@ -57,13 +57,8 @@ const reducer = (state, event) => {
       const initialProfile = toUtf8(event.returnValues.initialProfile);
       const timeCondition = event.returnValues.timeCondition;
       const contributionCondition = event.returnValues.contributionCondition;
-      const open = true;
-      const conditions = { open, timeCondition, contributionCondition }
-      console.log(initialProfile)
-      console.log(finalProfile)
-      console.log(timeCondition)
-      console.log(contributionCondition)
-      console.log(conditions)
+      const initToFinalProfileExists = true;
+      const conditions = { initToFinalProfileExists, timeCondition, contributionCondition }
       newState = {
         ...state,
         transitions: {
@@ -78,7 +73,7 @@ const reducer = (state, event) => {
     case 'AddMember':
       const _member = event.returnValues.member;
       const _profile = toUtf8(event.returnValues.profile);
-      //const _exist = true;
+      const _exist = true;
       const _creationDate = event.returnValues.creationDate;
       const _contributions = event.returnValues.contributions;
       console.log(_member);
@@ -90,25 +85,31 @@ const reducer = (state, event) => {
         ...state,
         members: {
           ...state.members,
-          [member]: _member,
-          [profile]: _profile,
-          [creationDate]: _creationDate,
-          //[exist]: _exist,
-          [contributions]: _contributions,
+          [_member]: {
+            profile: _profile,
+            creationDate: _creationDate,
+            exist: _exist,
+            contributions: _contributions,
+          }
         }
       }
-      /*
-     newState.membersMap.set(event.returnValues.member, {
-       profile: event.returnValues.profile,
-       creationDate: event.returnValues.creationDate,
-       exists: true,
-       contributions: event.returnType.contributions
-     });
-     */
       break
     case 'AssignProfileToMember':
+
+      const _profile_ = toUtf8(event.returnValues.profile);
+      const _member_ = event.returnValues.member;
+
+      console.log("Estoy en: AssignProfileToMember")
+      //console.log(members[0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb].profile);
       newState = {
         ...state,
+        members: {
+          ...state.members,
+          [_member_]: {
+            ...state.members[_member_],
+            profile: _profile_,
+          }
+        }
       }
       //newState.membersMap.set(event.returnValues.member, event.returnType.profile)
       break

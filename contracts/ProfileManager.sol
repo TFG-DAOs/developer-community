@@ -22,7 +22,7 @@ contract ProfileManager is AragonApp {
     struct Member {
         bytes32 profile;
         uint256 creationDate;
-        //bool exists;
+        bool exists;
         //just for testing purposes
         uint256 contributions;
     }
@@ -48,15 +48,7 @@ contract ProfileManager is AragonApp {
     }
 
 
-    function addMember(address member, bytes32 profile, uint256 creationDate, uint256 contributions) public {
-        members[member].profile = profile;
-        members[member].creationDate = creationDate;
-        members[member].contributions = contributions;
-        //members[member].exists = true;
-
-        emit AddMember(msg.sender, member, profile, creationDate, contributions);
-
-    }
+   
      /**
       * @notice Add "`@fromHex(newProfile)`" as a new profile
       * @param newProfile Name of the profile to be added
@@ -83,28 +75,34 @@ contract ProfileManager is AragonApp {
         emit RemoveProfile(msg.sender, profileToRemove);
     }
 
+     function addMember(address member, bytes32 profile, uint256 creationDate, uint256 contributions) public {
+        members[member].profile = profile;
+        members[member].creationDate = creationDate;
+        members[member].contributions = contributions;
+        members[member].exists = true;
+
+        emit AddMember(msg.sender, member, profile, creationDate, contributions);
+
+    }
+
     function assignProfileToMember(address member, bytes32 profile) public {
-        //require(members[member].exists);
-        members[member].profile = "0x50657266696c31";
-        members[member].creationDate = 10;
-        members[member].contributions = 10;
+        require(members[member].exists);
+          //check if new profile can be assign to member given his current profile.
+        bytes32 memberProfile = members[member].profile;
+        //require(transitionRegister[profile][memberProfile].initToFinalProfileExists);
+        members[member].profile = profile;
+        emit AssignProfileToMember(msg.sender, member, profile);
+        //members[member].profile = "0x50657266696c31";
+        //members[member].creationDate = 10;
+        //members[member].contributions = 10;
        // members[member].exists = true;
 
-        //check if new profile can be assign to member given his current profile.
-        bytes32 memberProfile = members[member].profile;
-        require(transitionRegister[profile][memberProfile].initToFinalProfileExists);
+      
         //check profile restrictions (time, contributions, etc).
-        members[member].profile = profile;
-        
        // Conditions c = transitionRegister[profile][members[member].profile];
-        
         //require(c.initToFinalProfileExists);
-        
        // require(c.requestedTime <= members[member].creationDate);
-
         //require(c.requestedContributions <= members[member].contributions);
-        
-        emit AssignProfileToMember(msg.sender, member, profile);
     }
 
     function addTransition(bytes32 initialProfile, bytes32 finalProfile, uint256 timeCondition, uint256 contributionCondition) public {

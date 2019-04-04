@@ -21,7 +21,7 @@ function App() {
   api contiene todos los metodos del contrato
   appState es el estado que devuelve la ultima funcion redux que se ha ejecutado.
   */
-  let _profile, _finalPofile, _initialProfile, _timeCondition, _contributionCondition;
+  let _profile, _finalPofile, _initialProfile, _timeCondition, _contributionCondition, _member;
   const { api, appState } = useAragonApi();
   const { /*timeCondition, contributionCondition ,*/profiles, syncing } = appState;
   const [opened, setOpened] = useState(false);
@@ -62,15 +62,29 @@ function App() {
               New profile
             </Button>
             <hr></hr>
+            
             <Button mode="strong" onClick={() => {
-              api.addMember('0x74404792c88a0FaDb9f00b2b852046dbaDDA3E44', toHex('aa'), 35, 45)
+              api.addMember('0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb', toHex('aa'), 35, 45)
+              
             }}>
-              Add member
+              AddMember1
+            </Button>
+            <Button mode="strong" onClick={() => {
+              api.addMember('0xb4124cEB3451635DAcedd11767f004d8a28c6eE7', toHex('aa'), 35, 45)
+             
+              
+            }}>
+              AddMember2
             </Button>
             <Button mode="strong" onClick={() => {
               api.assignProfileToMember('0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb', toHex('ss'))
             }}>
-              Assign profile to membere
+              Assign profile to member1
+            </Button>
+            <Button mode="strong" onClick={() => {
+              api.assignProfileToMember('0xb4124cEB3451635DAcedd11767f004d8a28c6eE7', toHex('ss'))
+            }}>
+              Assign profile to member2
             </Button>
           </CardContent>
         </Card>
