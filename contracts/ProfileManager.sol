@@ -10,10 +10,11 @@ contract ProfileManager is AragonApp {
     event AddProfile(address indexed entity, bytes32 profile);
     event RemoveProfile(address indexed entity, bytes32 profile);
     event AddTransition(address indexed entity, bytes32 finalProfile, bytes32 initialProfile, uint256 timeCondition, uint256 contributionCondition);
+    event ChangeConditions(address indexed entity, bytes32 finalProfile, bytes32 initialProfile, uint256 timeCondition, uint256 contributionCondition);
     event AssignProfileToMember(address indexed entity, address member, bytes32 profile);
    
     event AddMember(address indexed entity, address member, bytes32 profile, uint256 creationDate, uint256 contributions);
-
+    
     //event RemoveProfile(address indexed entity, bytes32 profile);
 
 
@@ -46,9 +47,6 @@ contract ProfileManager is AragonApp {
     function initialize() onlyInit public {
         initialized();
     }
-
-
-   
      /**
       * @notice Add "`@fromHex(newProfile)`" as a new profile
       * @param newProfile Name of the profile to be added
@@ -108,7 +106,7 @@ contract ProfileManager is AragonApp {
         transitionRegister[finalProfile][initialProfile].initToFinalProfileExists = true;
         transitionRegister[finalProfile][initialProfile].requestedTime = timeCondition;
         transitionRegister[finalProfile][initialProfile].requestedContributions = contributionCondition;
-        emit AddTransition(msg.sender, finalProfile, initialProfile, timeCondition,contributionCondition);
+        emit AddTransition(msg.sender, finalProfile, initialProfile, timeCondition, contributionCondition);
     }
 
     function removeTransition(bytes32 finalProfile, bytes32 initialProfile) public {
@@ -116,9 +114,11 @@ contract ProfileManager is AragonApp {
         transitionRegister[finalProfile][initialProfile].initToFinalProfileExists = false;
 
     }
-    function changeConditions(bytes32 initialProfile, bytes32 finalProfile, uint256 timeCondition, uint256 contributionCondition) public {
+    function changeConditions(bytes32 finalProfile, bytes32 initialProfile, uint256 timeCondition, uint256 contributionCondition) public {
         require(transitionRegister[finalProfile][initialProfile].initToFinalProfileExists);
         transitionRegister[finalProfile][initialProfile].requestedTime = timeCondition;
         transitionRegister[finalProfile][initialProfile].requestedContributions = contributionCondition;
+        emit ChangeConditions(msg.sender, finalProfile, initialProfile, timeCondition, contributionCondition);
+    
     }
 }

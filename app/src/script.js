@@ -15,15 +15,9 @@ const reducer = (state, event) => {
         profiles: [],
         transitions: {},
         members: {},
-        //membersMap: new Map()
       }
-
-
-
       break
     case 'AddProfile':
-      console.log(toUtf8(event.returnValues.profile))
-
       newState = {
         ...state,
         profiles: [...state.profiles, toUtf8(event.returnValues.profile)]
@@ -38,12 +32,8 @@ const reducer = (state, event) => {
         state.splice(pos, 1)
         /*const result = state.filter(profile => {
           console.log(profile, "========",keyProfile)
-         
-           
           return profile != keyProfile
         })*/
-        console.log("RESULTADOOOOOOOO", state)
-
         return state
       }
       newState = {
@@ -51,7 +41,7 @@ const reducer = (state, event) => {
         profiles: remove(state.profiles, toUtf8(event.returnValues.profile)),
       }
       break
-    case 'AddTransition':
+    case 'AddTransition': {
 
       const finalProfile = toUtf8(event.returnValues.finalProfile);
       const initialProfile = toUtf8(event.returnValues.initialProfile);
@@ -59,8 +49,6 @@ const reducer = (state, event) => {
       const contributionCondition = event.returnValues.contributionCondition;
       const initToFinalProfileExists = true;
       const conditions = { initToFinalProfileExists, timeCondition, contributionCondition }
-      console.log(finalProfile);
-      console.log(initialProfile);
       newState = {
         ...state,
         transitions: {
@@ -71,6 +59,7 @@ const reducer = (state, event) => {
           },
         },
       }
+    }
       break
     case 'AddMember':
       const _member = event.returnValues.member;
@@ -78,11 +67,6 @@ const reducer = (state, event) => {
       const _exist = true;
       const _creationDate = event.returnValues.creationDate;
       const _contributions = event.returnValues.contributions;
-      console.log(_member);
-      console.log(_profile);
-      console.log(_creationDate);
-      console.log(_contributions);
-
       newState = {
         ...state,
         members: {
@@ -97,12 +81,8 @@ const reducer = (state, event) => {
       }
       break
     case 'AssignProfileToMember':
-
       const _profile_ = toUtf8(event.returnValues.profile);
       const _member_ = event.returnValues.member;
-
-      console.log("Estoy en: AssignProfileToMember")
-      //console.log(members[0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb].profile);
       newState = {
         ...state,
         members: {
@@ -113,7 +93,27 @@ const reducer = (state, event) => {
           }
         }
       }
-      //newState.membersMap.set(event.returnValues.member, event.returnType.profile)
+      break
+    case 'ChangeConditions': {
+      const finalProfile = toUtf8(event.returnValues.finalProfile);
+      const initialProfile = toUtf8(event.returnValues.initialProfile);
+      const _timeCondition = event.returnValues.timeCondition;
+      const _contributionCondition = event.returnValues.contributionCondition;
+      newState = {
+        ...state,
+        transitions: {
+          ...state.transitions,
+          [finalProfile]: {
+            ...state.transitions[finalProfile],
+            [initialProfile]: {
+              ...state.transitions[finalProfile][initialProfile],
+              timeCondition: _timeCondition,
+              contributionCondition: _contributionCondition,
+            },
+          },
+        },
+      }
+    }
       break
     default:
       newState = state
@@ -131,7 +131,6 @@ api.store((state, event) => {
   }
 },
   [
-    // Always initialize the store with our own home-made event
     of({ event: INITIALIZATION_TRIGGER }),
   ]
 )
