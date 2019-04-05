@@ -9,7 +9,7 @@ contract ProfileManager is AragonApp {
     //Profile events.
     event AddProfile(address indexed entity, bytes32 profile);
     event RemoveProfile(address indexed entity, bytes32 profile);
-    event AddTransition(address indexed entity, bytes32 initialProfile, bytes32 finalProfile, uint256 timeCondition, uint256 contributionCondition);
+    event AddTransition(address indexed entity, bytes32 finalProfile, bytes32 initialProfile, uint256 timeCondition, uint256 contributionCondition);
     event AssignProfileToMember(address indexed entity, address member, bytes32 profile);
    
     event AddMember(address indexed entity, address member, bytes32 profile, uint256 creationDate, uint256 contributions);
@@ -89,15 +89,9 @@ contract ProfileManager is AragonApp {
         require(members[member].exists);
           //check if new profile can be assign to member given his current profile.
         bytes32 memberProfile = members[member].profile;
-        //require(transitionRegister[profile][memberProfile].initToFinalProfileExists);
+        require(transitionRegister[profile][memberProfile].initToFinalProfileExists);
         members[member].profile = profile;
-        emit AssignProfileToMember(msg.sender, member, profile);
-        //members[member].profile = "0x50657266696c31";
-        //members[member].creationDate = 10;
-        //members[member].contributions = 10;
-       // members[member].exists = true;
-
-      
+        emit AssignProfileToMember(msg.sender, member, profile);  
         //check profile restrictions (time, contributions, etc).
        // Conditions c = transitionRegister[profile][members[member].profile];
         //require(c.initToFinalProfileExists);
@@ -105,10 +99,11 @@ contract ProfileManager is AragonApp {
         //require(c.requestedContributions <= members[member].contributions);
     }
 
-    function addTransition(bytes32 initialProfile, bytes32 finalProfile, uint256 timeCondition, uint256 contributionCondition) public {
+    function addTransition(bytes32 finalProfile, bytes32 initialProfile, uint256 timeCondition, uint256 contributionCondition) public {
         /*Both initial and final profile should exists.*/
-        require(profiles[initialProfile]);
         require(profiles[finalProfile]);
+        require(profiles[initialProfile]);
+        
 
         transitionRegister[finalProfile][initialProfile].initToFinalProfileExists = true;
         transitionRegister[finalProfile][initialProfile].requestedTime = timeCondition;
@@ -116,7 +111,7 @@ contract ProfileManager is AragonApp {
         emit AddTransition(msg.sender, finalProfile, initialProfile, timeCondition,contributionCondition);
     }
 
-    function removeTransition(bytes32 initialProfile, bytes32 finalProfile) public {
+    function removeTransition(bytes32 finalProfile, bytes32 initialProfile) public {
         require(transitionRegister[finalProfile][initialProfile].initToFinalProfileExists);
         transitionRegister[finalProfile][initialProfile].initToFinalProfileExists = false;
 

@@ -59,6 +59,8 @@ const reducer = (state, event) => {
       const contributionCondition = event.returnValues.contributionCondition;
       const initToFinalProfileExists = true;
       const conditions = { initToFinalProfileExists, timeCondition, contributionCondition }
+      console.log(finalProfile);
+      console.log(initialProfile);
       newState = {
         ...state,
         transitions: {

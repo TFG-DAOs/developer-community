@@ -21,7 +21,7 @@ function App() {
   api contiene todos los metodos del contrato
   appState es el estado que devuelve la ultima funcion redux que se ha ejecutado.
   */
-  let _profile, _finalPofile, _initialProfile, _timeCondition, _contributionCondition, _member;
+  let _profile, _finalProfile, _initialProfile, _timeCondition, _contributionCondition, _member;
   const { api, appState } = useAragonApi();
   const { /*timeCondition, contributionCondition ,*/profiles, syncing } = appState;
   const [opened, setOpened] = useState(false);
@@ -93,7 +93,7 @@ function App() {
         <Card className="padded" width="100%" height="100%">
           <form onSubmit={e => e.preventDefault()}>
             <text>FinalPofile</text>
-            <TextInput style={{ height: "40PX", width: "200px", marginLeft: "5px", marginRight: "5px" }} type="text" ref={input => (_finalPofile = input)}/>
+            <TextInput style={{ height: "40PX", width: "200px", marginLeft: "5px", marginRight: "5px" }} type="text" ref={input => (_finalProfile = input)}/>
             <text>InitialProfile</text>
             <TextInput style={{ height: "40PX", width: "200px", marginLeft: "5px", marginRight: "5px" }} type="text" ref={input => (_initialProfile = input)} />
             <text>Time(months)</text>
@@ -104,7 +104,8 @@ function App() {
               <Buttons>
                 <Button style={{ height: "40PX", marginleft: "" }} mode="strong" onClick={() => {
                   //alert(toHex(_finalPofile));
-                  api.addTransition(toHex(_finalPofile.value), toHex(_initialProfile.value), _timeCondition.value, _contributionCondition.value);
+              
+                  api.addTransition(toHex(_finalProfile.value), toHex(_initialProfile.value), _timeCondition.value, _contributionCondition.value);
                 }}>
                   Add Transition</Button>
                 <Button style={{ height: "40PX", marginleft: "" }} type="button" mode="secondary" onClick={e => handleSubmit(false)}>
