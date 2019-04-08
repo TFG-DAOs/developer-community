@@ -12,7 +12,7 @@ contract ProfileManager is AragonApp {
     event AddTransition(address indexed entity, bytes32 finalProfile, bytes32 initialProfile, uint256 timeCondition, uint256 contributionCondition);
     event ChangeConditions(address indexed entity, bytes32 finalProfile, bytes32 initialProfile, uint256 timeCondition, uint256 contributionCondition);
     event AssignProfileToMember(address indexed entity, address member, bytes32 profile);
-   
+   event RemoveTransition(address indexed entity, bytes32 finalProfile, bytes32 initialProfile);
     event AddMember(address indexed entity, address member, bytes32 profile, uint256 creationDate, uint256 contributions);
     
     //event RemoveProfile(address indexed entity, bytes32 profile);
