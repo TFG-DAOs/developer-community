@@ -60,8 +60,40 @@ const handleAddProfile = (profile) => {
                 <li>
                    <Button
                   mode ="text"
-                  onClick={() => setPerfilActivo(profile)}>
+                  onClick={() => {
+                    
+                    setPerfilActivo(profile)
+                    console.log("He pinchado en " + profile);
+ 
+                    let element = document.getElementById("t");
+
+                    //Perfil clicado
+                    let finprofile = document.createElement("Text");
+                    finprofile.innerHTML = "Perfil Final: " + profile + "</br>";
+                    element.appendChild(finprofile);
+
+                    for (let key in transitions[profile]){
+                      let container=document.createElement("div");
+                      let iniprofile = document.createElement("Text");
+                      let contributions = document.createElement("Text");
+                      let time = document.createElement("Text");
+
+
+                      //Estados que pueden llegar a ese perfil
+                      iniprofile.innerHTML = "Prefil inicial: " + key + "</br>";
+                      //Contribuciones de los mismo para llegar a ese perfil
+                      contributions.innerHTML = "Contribuciones: " + transitions[profile][key].contributionCondition + "</br>";
+                      //Tiempo para llegar a ese perfil clicado
+                      time.innerHTML="Tiempo: " + transitions[profile][key].timeCondition + "</br>";
+
+                      container.appendChild(iniprofile);
+                      container.appendChild(contributions);
+                      container.appendChild(time);
+                      element.appendChild(container);
+                    }
+                    }}>
                   {profile}
+
                   </Button>
                   <Button
 
@@ -103,10 +135,9 @@ const handleAddProfile = (profile) => {
                 api.addTransition(toHex(profiles[active]), toHex(_initialProfile.value), _timeCondition.value, _contributionCondition.value);
               }}>{profiles[active]}</Button>
               </Buttons>
-          <Transitions
-            transitions = {transitions}
-            perfilActivo = {perfilActivo}
-          />
+          
+            <transitions id="t"></transitions>
+
         </Card>
       </BaseLayout>
       <SideBar

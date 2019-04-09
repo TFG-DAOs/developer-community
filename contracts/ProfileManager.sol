@@ -109,9 +109,10 @@ contract ProfileManager is AragonApp {
         emit AddTransition(msg.sender, finalProfile, initialProfile, timeCondition, contributionCondition);
     }
 
-    function removeTransition(bytes32 finalProfile, bytes32 initialProfile) public {
+    function removeTransition(bytes32 initialProfile, bytes32  finalProfile) public {
         require(transitionRegister[finalProfile][initialProfile].initToFinalProfileExists);
         transitionRegister[finalProfile][initialProfile].initToFinalProfileExists = false;
+        emit RemoveTransition(msg.sender,finalProfile,initialProfile);
 
     }
     function changeConditions(bytes32 finalProfile, bytes32 initialProfile, uint256 timeCondition, uint256 contributionCondition) public {
