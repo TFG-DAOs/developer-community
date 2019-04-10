@@ -9,7 +9,7 @@ contract ProfileManager is AragonApp {
     //Profile events.
     event AddProfile(address indexed entity, bytes32 profile);
     event RemoveProfile(address indexed entity, bytes32 profile);
-    event AddTransition(address indexed entity, bytes32 finalProfile, bytes32 initialProfile, uint256 timeCondition, uint256 contributionCondition);
+    event AddTransition(address indexed entity, bytes32 test, uint256 timeCondition, uint256 contributionCondition);
     event ChangeConditions(address indexed entity, bytes32 finalProfile, bytes32 initialProfile, uint256 timeCondition, uint256 contributionCondition);
     event AssignProfileToMember(address indexed entity, address member, bytes32 profile);
    event RemoveTransition(address indexed entity, bytes32 finalProfile, bytes32 initialProfile);
@@ -42,7 +42,7 @@ contract ProfileManager is AragonApp {
     mapping(address => Member) members;
 
     /*key: destinyProfile | value: (key : initialProfile | value: Necessary conditions to pass from one profile to another)*/
-    mapping(bytes32 => mapping(bytes32 => Conditions)) transitionRegister;
+    mapping(bytes32 => Conditions) transitionRegister;
 
     function initialize() onlyInit public {
         initialized();
@@ -87,7 +87,7 @@ contract ProfileManager is AragonApp {
         require(members[member].exists);
           //check if new profile can be assign to member given his current profile.
         bytes32 memberProfile = members[member].profile;
-        require(transitionRegister[profile][memberProfile].initToFinalProfileExists);
+        require(transitionRegister[profile].initToFinalProfileExists);
         members[member].profile = profile;
         emit AssignProfileToMember(msg.sender, member, profile);  
         //check profile restrictions (time, contributions, etc).
@@ -97,27 +97,28 @@ contract ProfileManager is AragonApp {
         //require(c.requestedContributions <= members[member].contributions);
     }
 
-    function addTransition(bytes32 finalProfile, bytes32 initialProfile, uint256 timeCondition, uint256 contributionCondition) public {
+    function addTransition(bytes32 test, bytes32 initialProfile, bytes32 finalProfile, uint256 timeCondition, uint256 contributionCondition) public {
         /*Both initial and final profile should exists.*/
         require(profiles[finalProfile]);
         require(profiles[initialProfile]);
-        
 
-        transitionRegister[finalProfile][initialProfile].initToFinalProfileExists = true;
-        transitionRegister[finalProfile][initialProfile].requestedTime = timeCondition;
-        transitionRegister[finalProfile][initialProfile].requestedContributions = contributionCondition;
-        emit AddTransition(msg.sender, finalProfile, initialProfile, timeCondition, contributionCondition);
+        //test =  sha3(initialProfile, finalProfile);
+        
+        transitionRegister[test].initToFinalProfileExists = true;
+        transitionRegister[test].requestedTime = timeCondition;
+        transitionRegister[test].requestedContributions = contributionCondition;
+        emit AddTransition(msg.sender, test, timeCondition, contributionCondition);
     }
 
     function removeTransition(bytes32 finalProfile, bytes32 initialProfile) public {
-        require(transitionRegister[finalProfile][initialProfile].initToFinalProfileExists);
-        transitionRegister[finalProfile][initialProfile].initToFinalProfileExists = false;
+        require(transitionRegister[finalProfile].initToFinalProfileExists);
+        transitionRegister[initialProfile].initToFinalProfileExists = false;
 
     }
     function changeConditions(bytes32 finalProfile, bytes32 initialProfile, uint256 timeCondition, uint256 contributionCondition) public {
-        require(transitionRegister[finalProfile][initialProfile].initToFinalProfileExists);
-        transitionRegister[finalProfile][initialProfile].requestedTime = timeCondition;
-        transitionRegister[finalProfile][initialProfile].requestedContributions = contributionCondition;
+        require(transitionRegister[finalProfile].initToFinalProfileExists);
+        transitionRegister[finalProfile].requestedTime = timeCondition;
+        transitionRegister[finalProfile].requestedContributions = contributionCondition;
         emit ChangeConditions(msg.sender, finalProfile, initialProfile, timeCondition, contributionCondition);
     
     }

@@ -8,7 +8,7 @@ const api = new AragonApi();
 
 const reducer = (state, event) => {
   let newState;
-  console.log(state, event);
+  console.log(state, event, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
   switch (event.event) {
     case INITIALIZATION_TRIGGER:
       newState = {
@@ -42,46 +42,25 @@ const reducer = (state, event) => {
       break;
     case "AddTransition":
       {
-        const finalProfile = toUtf8(event.returnValues.finalProfile);
-        const initialProfile = toUtf8(event.returnValues.initialProfile);
-        const timeCondition = event.returnValues.timeCondition;
-        const contributionCondition = event.returnValues.contributionCondition;
-        const initToFinalProfileExists = true;
-        const conditions = {
-          initToFinalProfileExists,
-          timeCondition,
-          contributionCondition
-        };
+        const finalProfile = event.returnValues.test;
+        console.log(finalProfile);
+        const _timeCondition = event.returnValues.timeCondition;
+        const _contributionCondition = event.returnValues.contributionCondition;
+        const _initToFinalProfileExists = true;
+       
         newState = {
           ...state,
           transitions: {
             ...state.transitions,
             [finalProfile]: {
-              ...state.transitions[finalProfile],
-              [initialProfile]: conditions
+              initToFinalProfileExists: _initToFinalProfileExists,
+              timeCondition: _timeCondition,
+              contributionCondition: _contributionCondition
             }
+             
           }
         };
       }
-      break;
-    case "RemoveTransition":
-      const _initialProfile = toUtf8(event.returnValues.initialProfile);
-      const _finalProfile = toUtf8(event.returnValues.finalProfile);
-      console.log("Estoy en RemoveTransition");
-      console.log(_initialProfile);
-      console.log(_finalProfile);
-      console.log(state.transitions[_finalProfile][_initialProfile]);
-      delete state.transitions[_finalProfile][_initialProfile];
-      console.log(state.transitions[_finalProfile][_initialProfile]);
-      let array = Object.values(state.transitions[_finalProfile]);
-      console.log("Tamaño de " + _finalProfile + " " + array.length);
-      if (array.length == 0) delete state.transitions[_finalProfile];
-
-      newState = {
-        ...state,
-        transitions: state.transitions
-      };
-      console.log(newState);
       break;
     case "AddMember":
       const _member = event.returnValues.member;
@@ -102,6 +81,26 @@ const reducer = (state, event) => {
         }
       };
       break;
+    case "RemoveTransition":
+      const _initialProfile = toUtf8(event.returnValues.initialProfile);
+      const _finalProfile = toUtf8(event.returnValues.finalProfile);
+      console.log("Estoy en RemoveTransition");
+      console.log(_initialProfile);
+      console.log(_finalProfile);
+      console.log(state.transitions[_finalProfile][_initialProfile]);
+      delete state.transitions[_finalProfile][_initialProfile];
+      console.log(state.transitions[_finalProfile][_initialProfile]);
+      let array = Object.values(state.transitions[_finalProfile]);
+      console.log("Tamaño de " + _finalProfile + " " + array.length);
+      if (array.length == 0) delete state.transitions[_finalProfile];
+
+      newState = {
+        ...state,
+        transitions: state.transitions
+      };
+      console.log(newState);
+      break;
+
     case "AssignProfileToMember":
       const _profile_ = toUtf8(event.returnValues.profile);
       const _member_ = event.returnValues.member;

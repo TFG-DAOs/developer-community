@@ -16,24 +16,49 @@ import {
 import {SideBar} from "./SideBar";
 import {Transitions} from "./Transitions";
 import styled from "styled-components";
-import { toHex } from "web3-utils";
+import { toHex, soliditySha3 } from "web3-utils";
 
 function App() {
   /*
   api contiene todos los metodos del contrato
   appState es el estado que devuelve la ultima funcion redux que se ha ejecutado.
   */
-  let _profile, _finalProfile, _initialProfile, _timeCondition, _contributionCondition, _newTimeCondition, _newContributionCondition;
+  let  _finalProfile, _initialProfile, _timeCondition, _contributionCondition, _newTimeCondition, _newContributionCondition;
   const { api, appState } = useAragonApi();
   const { /*timeCondition, contributionCondition ,*/ profiles,transitions, syncing } = appState;
   const [opened, setOpened] = useState(false);
   const [active, setActived] = useState(0);
   const [perfilActivo,setPerfilActivo] = useState('')
-
+  const [transitionsExist, setTransitionsExist] = useState(false)
+  const [transitionsActivas,setTransitionsActivas] = useState(new Array())
+  
 const handleAddProfile = (profile) => {
   
   setPerfilActivo(profile)
   api.addProfile(toHex(profile))
+}
+
+const cambiarPerfil = (profile) => {
+  
+  setPerfilActivo(profile)
+  let transitionsProfile = new Array()
+
+  for(let key in transitions){
+
+    for(let i = 0; i < profiles.length; i++){
+     
+      if(key == soliditySha3(profile,profiles[i]))
+      {
+       
+        setTransitionsExist(true)
+        transitionsProfile.push({finalProfile: profiles[i], hash: soliditySha3(profile,profiles[i])})
+      }
+    }
+    
+  }
+  setTransitionsActivas(transitionsProfile)
+  if(transitionsProfile.length == 0)
+  setTransitionsExist(false)
 }
   /*Esto hace que funcionen los dropdowns pero no consigo igualar el active que en teoria es el indice del array que esta seleccionado
     y con esto poner algo parecido a toHex(profiles[active].value) dentro de addTransition como finalProfile e igual con profiles[active2].value 
@@ -60,7 +85,7 @@ const handleAddProfile = (profile) => {
                 <li>
                    <Button
                   mode ="text"
-                  onClick={() => setPerfilActivo(profile)}>
+                  onClick={() => cambiarPerfil(profile)}>
                   {profile}
                   </Button>
                   <Button
@@ -89,24 +114,26 @@ const handleAddProfile = (profile) => {
         active={active}
         onChange={setActived}
       />
-            <Text>InitialProfile</Text>
-            <TextInput style={{ height: "40PX", width: "200px", marginLeft: "5px", marginRight: "5px" }} type="text" ref={input => (_initialProfile = input)} />
             <Text>Time(months)</Text>
             <TextInput style={{ height: "40PX", width: "200px", marginLeft: "5px", marginRight: "5px" }} type="number" ref={input => (_timeCondition = input)} />
             <Text>Contributions</Text>
             <TextInput style={{ height: "40PX", width: "200px", marginLeft: "5px", marginRight: "5px" }} type="number" ref={input => (_contributionCondition = input)} />
-
+            
             <Buttons>
-              <Button style={{ height: "40PX", marginleft: "" }} mode="strong" onClick={() => {
-                //alert(toHex(_finalPofile));
-
-                api.addTransition(toHex(profiles[active]), toHex(_initialProfile.value), _timeCondition.value, _contributionCondition.value);
+              <Button style={{ height: "40PX", marginleft: "" }} mode="strong" onClick={(_aa) => {
+                _aa = soliditySha3(perfilActivo,profiles[active]);
+                
+                api.addTransition(_aa, toHex(perfilActivo),toHex(profiles[active]),1, 1);
               }}>{profiles[active]}</Button>
               </Buttons>
           <Transitions
-            transitions = {transitions}
-            perfilActivo = {perfilActivo}
+          perfilActivo = {perfilActivo}
+          transitions = {transitions}
+          transitionsActivas = {transitionsActivas}
+          transitionsExist = {transitionsExist}
           />
+
+
         </Card>
       </BaseLayout>
       <SideBar
