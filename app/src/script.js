@@ -82,56 +82,44 @@ const reducer = (state, event) => {
       };
       break;
     case "RemoveTransition":
-      const _initialProfile = toUtf8(event.returnValues.initialProfile);
-      const _finalProfile = toUtf8(event.returnValues.finalProfile);
-      console.log("Estoy en RemoveTransition");
-      console.log(_initialProfile);
-      console.log(_finalProfile);
-      console.log(state.transitions[_finalProfile][_initialProfile]);
-      delete state.transitions[_finalProfile][_initialProfile];
-      console.log(state.transitions[_finalProfile][_initialProfile]);
-      let array = Object.values(state.transitions[_finalProfile]);
-      console.log("Tamaño de " + _finalProfile + " " + array.length);
-      if (array.length == 0) delete state.transitions[_finalProfile];
-
-      newState = {
+      const test =event.returnValues.test;
+      delete state.transitions[test]; 
+        newState = {
         ...state,
         transitions: state.transitions
       };
-      console.log(newState);
       break;
 
-    case "AssignProfileToMember":
-      const _profile_ = toUtf8(event.returnValues.profile);
-      const _member_ = event.returnValues.member;
+    case "AssignProfileToMember":{
+      const profile = toUtf8(event.returnValues.profile);
+      const member = event.returnValues.member;
       newState = {
         ...state,
         members: {
           ...state.members,
-          [_member_]: {
-            ...state.members[_member_],
-            profile: _profile_
+          [member]: {
+            ...state.members[member],
+            profile: profile
           }
         }
       };
+    }
       break;
     case "ChangeConditions":
       {
-        const finalProfile = toUtf8(event.returnValues.finalProfile);
-        const initialProfile = toUtf8(event.returnValues.initialProfile);
+        const test = event.returnValues.test;
+        const _initToFinalProfileExists = true;
         const _timeCondition = event.returnValues.timeCondition;
         const _contributionCondition = event.returnValues.contributionCondition;
+
         newState = {
           ...state,
           transitions: {
             ...state.transitions,
-            [finalProfile]: {
-              ...state.transitions[finalProfile],
-              [initialProfile]: {
-                ...state.transitions[finalProfile][initialProfile],
-                timeCondition: _timeCondition,
-                contributionCondition: _contributionCondition
-              }
+            [test]: {
+              initToFinalProfileExists: _initToFinalProfileExists,
+              timeCondition: _timeCondition,
+              contributionCondition: _contributionCondition
             }
           }
         };

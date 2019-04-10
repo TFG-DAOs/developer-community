@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Button,
+  IconCross,
   TextInput,
   SidePanel,
   Table,
@@ -17,7 +18,8 @@ export const Transitions = ({
   perfilActivo,
   transitions,
   transitionsActivas,
-  transitionsExist
+  transitionsExist,
+  handleRemoveTransition,
 }) => (
   <patata>
     {transitionsExist ? (
@@ -54,6 +56,14 @@ export const Transitions = ({
               <Text>{transitions[tr.hash].contributionCondition}</Text>
               
             </TableCell>
+            <TableCell>
+            <Button   onClick={() => {
+                    handleRemoveTransition(tr.hash,perfilActivo);
+                  }}
+                >
+                  <IconCross />
+                </Button>
+              </TableCell>
           </div>
         ))}
       </TableRow>
@@ -64,5 +74,3 @@ export const Transitions = ({
   
   </patata>
 );
-
-pa

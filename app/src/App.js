@@ -37,6 +37,11 @@ const handleAddProfile = (profile) => {
   setPerfilActivo(profile)
   api.addProfile(toHex(profile))
 }
+const handleRemoveTransition = (test,profile) =>{
+
+  api.removeTransition(test)
+  cambiarPerfil(profile)
+}
 
 const cambiarPerfil = (profile) => {
   
@@ -120,17 +125,29 @@ const cambiarPerfil = (profile) => {
             <TextInput style={{ height: "40PX", width: "200px", marginLeft: "5px", marginRight: "5px" }} type="number" ref={input => (_contributionCondition = input)} />
             
             <Buttons>
+            <Button style={{ height: "40PX", marginleft: "" }} mode="strong" onClick={(test) => {
+               test = soliditySha3(perfilActivo,profiles[active]);
+                //alert(toHex(_finalPofile));
+                api.changeConditions(test, _timeCondition.value, _contributionCondition.value);
+              }}>Change Conditions</Button>
+
               <Button style={{ height: "40PX", marginleft: "" }} mode="strong" onClick={(_aa) => {
                 _aa = soliditySha3(perfilActivo,profiles[active]);
-                
                 api.addTransition(_aa, toHex(perfilActivo),toHex(profiles[active]),1, 1);
               }}>{profiles[active]}</Button>
+              <Button mode="strong" onClick={(test) => {
+               test = soliditySha3(perfilActivo,profiles[active]);
+               api.removeTransition(test);
+              }}>
+              Remove Transition
+              </Button>
               </Buttons>
           <Transitions
           perfilActivo = {perfilActivo}
           transitions = {transitions}
           transitionsActivas = {transitionsActivas}
           transitionsExist = {transitionsExist}
+          handleRemoveTransition={handleRemoveTransition}
           />
 
 

@@ -10,9 +10,9 @@ contract ProfileManager is AragonApp {
     event AddProfile(address indexed entity, bytes32 profile);
     event RemoveProfile(address indexed entity, bytes32 profile);
     event AddTransition(address indexed entity, bytes32 test, uint256 timeCondition, uint256 contributionCondition);
-    event ChangeConditions(address indexed entity, bytes32 finalProfile, bytes32 initialProfile, uint256 timeCondition, uint256 contributionCondition);
+    event ChangeConditions(address indexed entity, bytes32 test, uint256 timeCondition, uint256 contributionCondition);
     event AssignProfileToMember(address indexed entity, address member, bytes32 profile);
-   event RemoveTransition(address indexed entity, bytes32 finalProfile, bytes32 initialProfile);
+    event RemoveTransition(address indexed entity, bytes32 test);
     event AddMember(address indexed entity, address member, bytes32 profile, uint256 creationDate, uint256 contributions);
     
     //event RemoveProfile(address indexed entity, bytes32 profile);
@@ -110,16 +110,16 @@ contract ProfileManager is AragonApp {
         emit AddTransition(msg.sender, test, timeCondition, contributionCondition);
     }
 
-    function removeTransition(bytes32 finalProfile, bytes32 initialProfile) public {
-        require(transitionRegister[finalProfile].initToFinalProfileExists);
-        transitionRegister[initialProfile].initToFinalProfileExists = false;
-
+    function removeTransition(bytes32 test) public {
+        require(transitionRegister[test].initToFinalProfileExists);
+        transitionRegister[test].initToFinalProfileExists = false;
+        emit RemoveTransition(msg.sender, test);
     }
-    function changeConditions(bytes32 finalProfile, bytes32 initialProfile, uint256 timeCondition, uint256 contributionCondition) public {
-        require(transitionRegister[finalProfile].initToFinalProfileExists);
-        transitionRegister[finalProfile].requestedTime = timeCondition;
-        transitionRegister[finalProfile].requestedContributions = contributionCondition;
-        emit ChangeConditions(msg.sender, finalProfile, initialProfile, timeCondition, contributionCondition);
+    function changeConditions(bytes32 test,  uint256 timeCondition, uint256 contributionCondition) public {
+        require(transitionRegister[test].initToFinalProfileExists);
+        transitionRegister[test].requestedTime = timeCondition;
+        transitionRegister[test].requestedContributions = contributionCondition;
+        emit ChangeConditions(msg.sender, test, timeCondition, contributionCondition);
     
     }
 }
