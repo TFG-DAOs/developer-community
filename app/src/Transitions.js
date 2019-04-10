@@ -9,7 +9,8 @@ import {
   TableCell,
   TableRow,
   Text,
-  Card
+  Card,
+  AppView
 } from "@aragon/ui";
 import styled from "styled-components";
 import { toHex } from "web3-utils";
@@ -20,8 +21,10 @@ export const Transitions = ({
   transitionsActivas,
   transitionsExist,
   handleRemoveTransition,
+  setActiveAddProfile,
+  setOpened
 }) => (
-  <patata>
+  <AppView title= {perfilActivo}>
     {transitionsExist ? (
       <Table
     header={
@@ -32,22 +35,24 @@ export const Transitions = ({
   >
       <TableRow>
         <TableCell>
-              <Text>FINAL PROFILE</Text>
+              <Text>FINAL PROFILE {console.log("FINAAAAAAAL")}</Text>
             </TableCell><TableCell>
               <Text>TIME CONDITON</Text>
             </TableCell><TableCell>
               <Text>CONTRIBUTION CONDITION</Text>
             </TableCell>
       </TableRow>
-      <TableRow>
+      
 
         {transitionsActivas.map(tr => (
           <div>
+            {(transitions[tr.hash] !== undefined) ? (
+              <TableRow>
             <TableCell>
               <Text>{tr.finalProfile}</Text>
             </TableCell>
             <TableCell>
-              <Text>{transitions[tr.hash].timeCondition}</Text>
+              <Text>{console.log(transitions[tr.hash])}{transitions[tr.hash].timeCondition}</Text>
               
             </TableCell>
             
@@ -58,19 +63,29 @@ export const Transitions = ({
             </TableCell>
             <TableCell>
             <Button   onClick={() => {
-                    handleRemoveTransition(tr.hash,perfilActivo);
+                    handleRemoveTransition(tr.hash,perfilActivo)
+                    console.log("TRANSITISDIsssssssssss")
+                   
                   }}
                 >
                   <IconCross />
                 </Button>
               </TableCell>
+              </TableRow>
+              ) : ( <Text> 1</Text>)}
           </div>
         ))}
-      </TableRow>
+    
       </Table>
     ) : (
       <Text> NO HAY TRANSICIONES A OTROS PERFILES</Text>
     )}
+    <Button mode="strong" onClick={() => {setActiveAddProfile(false)
+              setOpened(true)}}>
+              Add Transition
+            </Button>
+
+
   
-  </patata>
+  </AppView>
 );

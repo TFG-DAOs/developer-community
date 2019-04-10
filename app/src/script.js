@@ -8,7 +8,7 @@ const api = new AragonApi();
 
 const reducer = (state, event) => {
   let newState;
-  console.log(state, event, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+  console.log(state, event);
   switch (event.event) {
     case INITIALIZATION_TRIGGER:
       newState = {

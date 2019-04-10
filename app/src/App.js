@@ -30,6 +30,7 @@ function App() {
   const [active, setActived] = useState(0);
   const [perfilActivo,setPerfilActivo] = useState('')
   const [transitionsExist, setTransitionsExist] = useState(false)
+  const [activeAddProfile, setActiveAddProfile] = useState(0)
   const [transitionsActivas,setTransitionsActivas] = useState(new Array())
   
 const handleAddProfile = (profile) => {
@@ -37,10 +38,14 @@ const handleAddProfile = (profile) => {
   setPerfilActivo(profile)
   api.addProfile(toHex(profile))
 }
-const handleRemoveTransition = (test,profile) =>{
-
+const handleRemoveTransition = (test,perfil) =>{
+  
+  
   api.removeTransition(test)
-  cambiarPerfil(profile)
+  
+}
+const handleAddTransition = (hash,initial,final,time,contribution) =>{
+  api.addTransition(hash, initial,final,time,contribution)
 }
 
 const cambiarPerfil = (profile) => {
@@ -65,19 +70,9 @@ const cambiarPerfil = (profile) => {
   if(transitionsProfile.length == 0)
   setTransitionsExist(false)
 }
-  /*Esto hace que funcionen los dropdowns pero no consigo igualar el active que en teoria es el indice del array que esta seleccionado
-    y con esto poner algo parecido a toHex(profiles[active].value) dentro de addTransition como finalProfile e igual con profiles[active2].value 
-    para el initialProfile  
-    */
-   
-   /*
-      const [active2, setActived2] = useState(0);
-      
-        <DropDown
-        items={profiles}
-        active={active2}
-        onChange={setActived2}
-      />*/
+
+
+  
   return (
     <Main>
       <BaseLayout>
@@ -104,7 +99,8 @@ const cambiarPerfil = (profile) => {
                   </li> 
               ))}
             </ul>
-            <Button mode="strong" onClick={() => setOpened(true)}>
+            <Button mode="strong" onClick={() => {setActiveAddProfile(true)
+              setOpened(true)}}>
               New profile
             </Button>
           </CardContent>
@@ -113,51 +109,31 @@ const cambiarPerfil = (profile) => {
 
         <Card className="padded" width="100%" height="100%">
          
-        <Text>FinalPofile</Text>
-            <DropDown
-        items={profiles}
-        active={active}
-        onChange={setActived}
-      />
-            <Text>Time(months)</Text>
-            <TextInput style={{ height: "40PX", width: "200px", marginLeft: "5px", marginRight: "5px" }} type="number" ref={input => (_timeCondition = input)} />
-            <Text>Contributions</Text>
-            <TextInput style={{ height: "40PX", width: "200px", marginLeft: "5px", marginRight: "5px" }} type="number" ref={input => (_contributionCondition = input)} />
-            
-            <Buttons>
-            <Button style={{ height: "40PX", marginleft: "" }} mode="strong" onClick={(test) => {
-               test = soliditySha3(perfilActivo,profiles[active]);
-                //alert(toHex(_finalPofile));
-                api.changeConditions(test, _timeCondition.value, _contributionCondition.value);
-              }}>Change Conditions</Button>
-
-              <Button style={{ height: "40PX", marginleft: "" }} mode="strong" onClick={(_aa) => {
-                _aa = soliditySha3(perfilActivo,profiles[active]);
-                api.addTransition(_aa, toHex(perfilActivo),toHex(profiles[active]),1, 1);
-              }}>{profiles[active]}</Button>
-              <Button mode="strong" onClick={(test) => {
-               test = soliditySha3(perfilActivo,profiles[active]);
-               api.removeTransition(test);
-              }}>
-              Remove Transition
-              </Button>
-              </Buttons>
+        
           <Transitions
           perfilActivo = {perfilActivo}
           transitions = {transitions}
           transitionsActivas = {transitionsActivas}
           transitionsExist = {transitionsExist}
+          setTransitionsActivas= {setTransitionsActivas}
           handleRemoveTransition={handleRemoveTransition}
+          setActiveAddProfile = {setActiveAddProfile}
+          setOpened={setOpened}
           />
-
-
+        
         </Card>
       </BaseLayout>
       <SideBar
+        activeAddProfile = {activeAddProfile}
+        setActiveAddProfile = {setActiveAddProfile}
         opened ={opened}
         perfilActivo ={perfilActivo}
         handleAddProfile={handleAddProfile}
         setOpened={setOpened}
+        active={active}
+        setActived={setActived}
+        profiles={profiles}
+        handleAddTransition = {handleAddTransition}
         />
 
     </Main>
@@ -179,12 +155,7 @@ const CardContent = styled.div`
     margin-top: 200px;
     text-align: center;
   `;
-const Buttons = styled.div`
-    display: grid;
-    grid-auto-flow: column;
-    grid-gap: 40px;
-    margin-top: 20px;
-  `;
+
 
 const Syncing = styled.div.attrs({ children: "Syncing…" })`
         position: absolute;
