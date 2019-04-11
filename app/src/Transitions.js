@@ -23,8 +23,11 @@ import {
     }>
     <TableRow>
       <TableCell>
-        <Text> {transitions[perfilActivo]["ss"].timeCondition}</Text>
-        
+        {perfilActivo && transitions[perfilActivo] ?
+        <Text> {Object.keys(transitions[perfilActivo]).map(t => <div>{t}</div>)}</Text>
+        :
+        null
+        }
       </TableCell>
     </TableRow>
     
