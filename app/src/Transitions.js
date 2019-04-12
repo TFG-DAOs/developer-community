@@ -29,41 +29,40 @@ export const Transitions = ({
       <Table
     header={
       <TableRow>
-        <TableHeader title="TRANSICIONES" />
-      </TableRow>
+      <TableCell>
+            <Text>FINAL PROFILE {console.log("FINAAAAAAAL")}</Text>
+          </TableCell><TableCell>
+            <Text>TIME CONDITON</Text>
+          </TableCell><TableCell>
+            <Text>CONTRIBUTION CONDITION</Text>
+
+          </TableCell>
+    </TableRow>
     }
   >
-      <TableRow>
-        <TableCell>
-              <Text>FINAL PROFILE {console.log("FINAAAAAAAL")}</Text>
-            </TableCell><TableCell>
-              <Text>TIME CONDITON</Text>
-            </TableCell><TableCell>
-              <Text>CONTRIBUTION CONDITION</Text>
-            </TableCell>
-      </TableRow>
-      
+        
+        {Object.keys(transitions[perfilActivo]).map(initialProfile => (
+            
+            <TableRow>
+            <TableCell>
 
-        {transitionsActivas.map(tr => (
-          <div>
-            {(transitions[tr.hash] !== undefined) ? (
-              <TableRow>
-            <TableCell>
-              <Text>{tr.finalProfile}</Text>
+              <Text>{initialProfile}</Text>
+
             </TableCell>
             <TableCell>
-              <Text>{console.log(transitions[tr.hash])}{transitions[tr.hash].timeCondition}</Text>
-              
+
+              <Text>{console.log(transitions[perfilActivo][initialProfile])}{transitions[perfilActivo][initialProfile].timeCondition}</Text>
+
             </TableCell>
             
             <TableCell>
                
-              <Text>{transitions[tr.hash].contributionCondition}</Text>
+              <Text>{transitions[perfilActivo][initialProfile].contributionCondition}</Text>
               
             </TableCell>
             <TableCell>
             <Button   onClick={() => {
-                    handleRemoveTransition(tr.hash,perfilActivo)
+                    handleRemoveTransition(toHex(initialProfile),toHex(perfilActivo))
                     console.log("TRANSITISDIsssssssssss")
                    
                   }}
@@ -72,8 +71,6 @@ export const Transitions = ({
                 </Button>
               </TableCell>
               </TableRow>
-              ) : ( <Text> 1</Text>)}
-          </div>
         ))}
     
       </Table>

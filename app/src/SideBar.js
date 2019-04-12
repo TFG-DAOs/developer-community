@@ -70,10 +70,8 @@ export const SideBar = ({
           <Button
             style={{ height: "40PX", marginleft: "" }}
             mode="strong"
-            onClick={_aa => {
-              _aa = soliditySha3(perfilActivo, profiles[active]);
+            onClick={() => {
               handleAddTransition(
-                _aa,
                 toHex(perfilActivo),
                 toHex(profiles[active]),
                 _timeCondition.value,

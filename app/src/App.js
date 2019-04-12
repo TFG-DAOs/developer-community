@@ -38,14 +38,14 @@ const handleAddProfile = (profile) => {
   setPerfilActivo(profile)
   api.addProfile(toHex(profile))
 }
-const handleRemoveTransition = (test,perfil) =>{
+const handleRemoveTransition = (initial,final) =>{
   
-  
-  api.removeTransition(test)
+  console.log("Por aquí paso")
+  api.removeTransition(initial,final);
   
 }
-const handleAddTransition = (hash,initial,final,time,contribution) =>{
-  api.addTransition(hash, initial,final,time,contribution)
+const handleAddTransition = (initial,final,time,contribution) =>{
+  api.addTransition(initial,final,time,contribution)
 }
 
 const cambiarPerfil = (profile) => {
@@ -57,11 +57,10 @@ const cambiarPerfil = (profile) => {
 
     for(let i = 0; i < profiles.length; i++){
      
-      if(key == soliditySha3(profile,profiles[i]))
+      if(key == profiles[i])
       {
-       
         setTransitionsExist(true)
-        transitionsProfile.push({finalProfile: profiles[i], hash: soliditySha3(profile,profiles[i])})
+        transitionsProfile.push({finalProfile: profiles[i]})
       }
     }
     

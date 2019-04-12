@@ -9,10 +9,10 @@ contract ProfileManager is AragonApp {
     //Profile events.
     event AddProfile(address indexed entity, bytes32 profile);
     event RemoveProfile(address indexed entity, bytes32 profile);
-    event AddTransition(address indexed entity, bytes32 test, uint256 timeCondition, uint256 contributionCondition);
-    event ChangeConditions(address indexed entity, bytes32 test, uint256 timeCondition, uint256 contributionCondition);
+    event AddTransition(address indexed entity, bytes32 initialProfile, bytes32 finalProfile, uint256 timeCondition, uint256 contributionCondition);
+    event ChangeConditions(address indexed entity, bytes32 initialProfile, bytes32 finalProfile, uint256 timeCondition, uint256 contributionCondition);
+    event RemoveTransition(address indexed entity, bytes32 initialProfile, bytes32 finalProfile);
     event AssignProfileToMember(address indexed entity, address member, bytes32 profile);
-    event RemoveTransition(address indexed entity, bytes32 test);
     event AddMember(address indexed entity, address member, bytes32 profile, uint256 creationDate, uint256 contributions);
     
     //event RemoveProfile(address indexed entity, bytes32 profile);
@@ -97,29 +97,31 @@ contract ProfileManager is AragonApp {
         //require(c.requestedContributions <= members[member].contributions);
     }
 
-    function addTransition(bytes32 test, bytes32 initialProfile, bytes32 finalProfile, uint256 timeCondition, uint256 contributionCondition) public {
+    function addTransition(bytes32 initialProfile, bytes32 finalProfile, uint256 timeCondition, uint256 contributionCondition) public {
         /*Both initial and final profile should exists.*/
         require(profiles[finalProfile]);
         require(profiles[initialProfile]);
 
-        //test =  sha3(initialProfile, finalProfile);
+        bytes32 test = keccak256(initialProfile,finalProfile);
         
         transitionRegister[test].initToFinalProfileExists = true;
         transitionRegister[test].requestedTime = timeCondition;
         transitionRegister[test].requestedContributions = contributionCondition;
-        emit AddTransition(msg.sender, test, timeCondition, contributionCondition);
+        emit AddTransition(msg.sender, initialProfile, finalProfile, timeCondition, contributionCondition);
     }
 
-    function removeTransition(bytes32 test) public {
+    function removeTransition(bytes32 initialProfile, bytes32 finalProfile) public {
+        bytes32 test = keccak256(initialProfile,finalProfile);
         require(transitionRegister[test].initToFinalProfileExists);
         transitionRegister[test].initToFinalProfileExists = false;
-        emit RemoveTransition(msg.sender, test);
+        emit RemoveTransition(msg.sender, initialProfile, finalProfile);
     }
-    function changeConditions(bytes32 test,  uint256 timeCondition, uint256 contributionCondition) public {
+    function changeConditions(bytes32 initialProfile, bytes32 finalProfile , uint256 timeCondition, uint256 contributionCondition) public {
+        bytes32 test = keccak256(initialProfile,finalProfile);
         require(transitionRegister[test].initToFinalProfileExists);
         transitionRegister[test].requestedTime = timeCondition;
         transitionRegister[test].requestedContributions = contributionCondition;
-        emit ChangeConditions(msg.sender, test, timeCondition, contributionCondition);
+        emit ChangeConditions(msg.sender, initialProfile, finalProfile, timeCondition, contributionCondition);
     
     }
 }
