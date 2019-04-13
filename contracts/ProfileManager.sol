@@ -66,38 +66,28 @@ contract ProfileManager is AragonApp {
        require(profiles[profileToRemove]);
      
        uint j = 0;
-       bool isDeleted = false;
         while(arrayProfiles.length > j){
             bytes32 _hash1 = keccak256(arrayProfiles[j],profileToRemove);//todos los perfiles a profileToRemove
             bytes32 _hash2 = keccak256(profileToRemove,arrayProfiles[j]);
-            if(!transitionRegister[_hash1].initToFinalProfileExists){
-                if (!transitionRegister[_hash2].initToFinalProfileExists){
-                    require(!profiles[profileToRemove], "Se puede borrar este perfil.");
-                }
-                else {
-                    require(!profiles[profileToRemove], "Existe ss -> aa, no se puede eliminar");
-                }
-            }
-            else {
-                require(!profiles[profileToRemove], "Existe aa -> ss, no se puede eliminar");
-            }
+            require(!transitionRegister[_hash1].initToFinalProfileExists);
+            require(!transitionRegister[_hash2].initToFinalProfileExists); 
             j++;
         }
-/*
+
         bool found = false;
         uint256 i = 0;
         while((arrayProfiles.length > i) && !found) {
-          
+            
             if(arrayProfiles[i] == profileToRemove){
                         profiles[profileToRemove] = false;
                         found = true;
-                        delete arrayProfiles[i];
-                        arrayProfiles[i] = arrayProfiles[arrayProfiles.length-1];
+                        arrayProfiles[i] = arrayProfiles[arrayProfiles.length-1];//copiamos el ultimo en i
+                        delete arrayProfiles[arrayProfiles.length-1]; // eliminamos el ultimo
                     }
             i++;
         
         
-        }*/
+        }
        emit RemoveProfile(msg.sender, profileToRemove);
     }
 
