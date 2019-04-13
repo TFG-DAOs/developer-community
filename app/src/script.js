@@ -52,9 +52,9 @@ const reducer = (state, event) => {
           ...state,
           transitions: {
             ...state.transitions,
-            [finalProfile]: {
-              ...state.transitions[finalProfile],
-              [initialProfile]: conditions,
+            [initialProfile]: {
+              ...state.transitions[initialProfile],
+              [finalProfile]: conditions,
             },
           },
         }
@@ -82,10 +82,10 @@ const reducer = (state, event) => {
     case "RemoveTransition":
     const _initialProfile = toUtf8(event.returnValues.initialProfile);
     const _finalProfile = toUtf8(event.returnValues.finalProfile);
-    delete state.transitions[_finalProfile][_initialProfile];
-    let array = Object.values(state.transitions[_finalProfile]);
+    delete state.transitions[_initialProfile][_finalProfile];
+    let array = Object.values(state.transitions[_initialProfile]);
     if(array.length == 0)
-      delete state.transitions[_finalProfile];
+      delete state.transitions[_initialProfile];
     
     newState = {
       ...state,
@@ -119,10 +119,10 @@ const reducer = (state, event) => {
         ...state,
         transitions: {
           ...state.transitions,
-          [finalProfile]: {
-            ...state.transitions[finalProfile],
-            [initialProfile]: {
-              ...state.transitions[finalProfile][initialProfile],
+          [initialProfile]: {
+            ...state.transitions[initialProfile],
+            [finalProfile]: {
+              ...state.transitions[initialProfile][finalProfile],
               timeCondition: _timeCondition,
               contributionCondition: _contributionCondition,
             },

@@ -29,9 +29,8 @@ function App() {
   const [opened, setOpened] = useState(false);
   const [active, setActived] = useState(0);
   const [perfilActivo,setPerfilActivo] = useState('')
-  const [transitionsExist, setTransitionsExist] = useState(false)
   const [activeAddProfile, setActiveAddProfile] = useState(0)
-  const [transitionsActivas,setTransitionsActivas] = useState(new Array())
+  
   
 const handleAddProfile = (profile) => {
   
@@ -51,23 +50,7 @@ const handleAddTransition = (initial,final,time,contribution) =>{
 const cambiarPerfil = (profile) => {
   
   setPerfilActivo(profile)
-  let transitionsProfile = new Array()
-
-  for(let key in transitions){
-
-    for(let i = 0; i < profiles.length; i++){
-     
-      if(key == profiles[i])
-      {
-        setTransitionsExist(true)
-        transitionsProfile.push({finalProfile: profiles[i]})
-      }
-    }
-    
-  }
-  setTransitionsActivas(transitionsProfile)
-  if(transitionsProfile.length == 0)
-  setTransitionsExist(false)
+  
 }
 
 
@@ -112,9 +95,6 @@ const cambiarPerfil = (profile) => {
           <Transitions
           perfilActivo = {perfilActivo}
           transitions = {transitions}
-          transitionsActivas = {transitionsActivas}
-          transitionsExist = {transitionsExist}
-          setTransitionsActivas= {setTransitionsActivas}
           handleRemoveTransition={handleRemoveTransition}
           setActiveAddProfile = {setActiveAddProfile}
           setOpened={setOpened}

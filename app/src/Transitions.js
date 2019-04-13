@@ -18,14 +18,12 @@ import { toHex } from "web3-utils";
 export const Transitions = ({
   perfilActivo,
   transitions,
-  transitionsActivas,
-  transitionsExist,
   handleRemoveTransition,
   setActiveAddProfile,
   setOpened
 }) => (
   <AppView title= {perfilActivo}>
-    {transitionsExist ? (
+    {transitions[perfilActivo] !== undefined ? (
       <Table
     header={
       <TableRow>
@@ -35,34 +33,35 @@ export const Transitions = ({
             <Text>TIME CONDITON</Text>
           </TableCell><TableCell>
             <Text>CONTRIBUTION CONDITION</Text>
-
+          </TableCell><TableCell>
+            <Text>REMOVE</Text>
           </TableCell>
     </TableRow>
     }
   >
         
-        {Object.keys(transitions[perfilActivo]).map(initialProfile => (
+        {Object.keys(transitions[perfilActivo]).map(finalProfile => (
             
             <TableRow>
             <TableCell>
 
-              <Text>{initialProfile}</Text>
+              <Text>{finalProfile}</Text>
 
             </TableCell>
             <TableCell>
 
-              <Text>{console.log(transitions[perfilActivo][initialProfile])}{transitions[perfilActivo][initialProfile].timeCondition}</Text>
+              <Text>{transitions[perfilActivo][finalProfile].timeCondition}</Text>
 
             </TableCell>
             
             <TableCell>
                
-              <Text>{transitions[perfilActivo][initialProfile].contributionCondition}</Text>
+              <Text>{transitions[perfilActivo][finalProfile].contributionCondition}</Text>
               
             </TableCell>
             <TableCell>
             <Button   onClick={() => {
-                    handleRemoveTransition(toHex(initialProfile),toHex(perfilActivo))
+                    handleRemoveTransition(toHex(perfilActivo),toHex(finalProfile))
                     console.log("TRANSITISDIsssssssssss")
                    
                   }}
