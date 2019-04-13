@@ -25,11 +25,12 @@ function App() {
   */
   let  _finalProfile, _initialProfile, _timeCondition, _contributionCondition, _newTimeCondition, _newContributionCondition;
   const { api, appState } = useAragonApi();
-  const { /*timeCondition, contributionCondition ,*/ profiles,transitions, syncing } = appState;
+  const {profiles,transitions, syncing } = appState;
   const [opened, setOpened] = useState(false);
   const [active, setActived] = useState(0);
   const [perfilActivo,setPerfilActivo] = useState('')
   const [activeAddProfile, setActiveAddProfile] = useState(0)
+  const [mode, setMode] = useState('Transition')
   
 const handleAddProfile = (profile) => {
   
@@ -39,6 +40,9 @@ const handleAddProfile = (profile) => {
 const handleRemoveTransition = (initial,final) =>{
   api.removeTransition(initial,final);
   
+}
+const handleChangeConditions = (initialProfile, finalProfile, timeCondition, contributionCondition) => {
+  api.changeConditions(initialProfile,  finalProfile, timeCondition,  contributionCondition)
 }
 const handleAddTransition = (initial,final,time,contribution) =>{
   api.addTransition(initial,final,time,contribution)
@@ -82,21 +86,25 @@ const cambiarPerfil = (profile) => {
           handleRemoveTransition={handleRemoveTransition}
           setActiveAddProfile = {setActiveAddProfile}
           setOpened={setOpened}
+          setMode={setMode}
           />
         
         </Card>
       </BaseLayout>
       <SideBar
-        activeAddProfile = {activeAddProfile}
-        setActiveAddProfile = {setActiveAddProfile}
-        opened ={opened}
-        perfilActivo ={perfilActivo}
+        activeAddProfile={activeAddProfile}
+        setActiveAddProfile={setActiveAddProfile}
+        opened={opened}
+        perfilActivo={perfilActivo}
         handleAddProfile={handleAddProfile}
         setOpened={setOpened}
         active={active}
         setActived={setActived}
         profiles={profiles}
-        handleAddTransition = {handleAddTransition}
+        handleAddTransition={handleAddTransition}
+        handleChangeConditions={handleChangeConditions}
+        mode={mode}
+        
         />
 
     </Main>

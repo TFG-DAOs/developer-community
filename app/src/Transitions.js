@@ -20,7 +20,8 @@ export const Transitions = ({
   transitions,
   handleRemoveTransition,
   setActiveAddProfile,
-  setOpened
+  setOpened,
+  setMode,
 }) => (
     <AppView title={perfilActivo}>
       {transitions[perfilActivo]!== undefined ? (
@@ -65,9 +66,25 @@ export const Transitions = ({
       ) : (
           <Text> NO HAY TRANSICIONES A OTROS PERFILES</Text>
         )}
+        <Buttons>
       <Button mode="strong" onClick={() => {
         setActiveAddProfile(false)
+        setMode('Transitions')
         setOpened(true)
       }}>Add Transition</Button>
+      <Button mode="strong" onClick={() => {
+        setActiveAddProfile(false)
+        setMode('Conditions')
+        setOpened(true)
+      }}>Edit Conditions</Button>
+      </Buttons>
     </AppView>
   );
+
+
+  const Buttons = styled.div`
+  display: grid;
+  grid-auto-flow: column;
+  grid-gap: 40px;
+  margin-top: 20px;
+`;

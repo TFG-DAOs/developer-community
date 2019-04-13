@@ -53,24 +53,52 @@ contract ProfileManager is AragonApp {
       */
     function addProfile(bytes32 newProfile) public {
         require(!profiles[newProfile], "This profile is already added");
+        arrayProfiles.push(newProfile);
         profiles[newProfile] = true;
         emit AddProfile(msg.sender, newProfile);
     }
+       /**
+      * @notice before remove  "`@fromHex(profileToRemove)`", remove transactions contains this profile
+      * @param profileToRemove Name of the profile to be added
+      */
 
     function removeProfile(bytes32 profileToRemove) public {
-        require(profiles[profileToRemove]);
-        profiles[profileToRemove] = false;
+       require(profiles[profileToRemove]);
+     
+       uint j = 0;
+       bool isDeleted = false;
+        while(arrayProfiles.length > j){
+            bytes32 _hash1 = keccak256(arrayProfiles[j],profileToRemove);//todos los perfiles a profileToRemove
+            bytes32 _hash2 = keccak256(profileToRemove,arrayProfiles[j]);
+            if(!transitionRegister[_hash1].initToFinalProfileExists){
+                if (!transitionRegister[_hash2].initToFinalProfileExists){
+                    require(!profiles[profileToRemove], "Se puede borrar este perfil.");
+                }
+                else {
+                    require(!profiles[profileToRemove], "Existe ss -> aa, no se puede eliminar");
+                }
+            }
+            else {
+                require(!profiles[profileToRemove], "Existe aa -> ss, no se puede eliminar");
+            }
+            j++;
+        }
+/*
         bool found = false;
         uint256 i = 0;
-        while(!found && arrayProfiles.length > i){
+        while((arrayProfiles.length > i) && !found) {
+          
             if(arrayProfiles[i] == profileToRemove){
-                found = true;
-                delete arrayProfiles[i];
-                arrayProfiles[i] = arrayProfiles[arrayProfiles.length-1];
-            }
+                        profiles[profileToRemove] = false;
+                        found = true;
+                        delete arrayProfiles[i];
+                        arrayProfiles[i] = arrayProfiles[arrayProfiles.length-1];
+                    }
             i++;
-        }
-        emit RemoveProfile(msg.sender, profileToRemove);
+        
+        
+        }*/
+       emit RemoveProfile(msg.sender, profileToRemove);
     }
 
      function addMember(address member, bytes32 profile, uint256 creationDate, uint256 contributions) public {
@@ -117,7 +145,7 @@ contract ProfileManager is AragonApp {
     function removeTransition(bytes32 initialProfile, bytes32 finalProfile) public {
         bytes32 _hash = keccak256(initialProfile,finalProfile);
         require(transitionRegister[_hash].initToFinalProfileExists);
-        transitionRegister[test].initToFinalProfileExists = false;
+        transitionRegister[_hash].initToFinalProfileExists = false;
         emit RemoveTransition(msg.sender, initialProfile, finalProfile);
     }
     function changeConditions(bytes32 initialProfile, bytes32 finalProfile , uint256 timeCondition, uint256 contributionCondition) public {
