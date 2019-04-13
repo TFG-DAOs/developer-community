@@ -29,50 +29,24 @@ function App() {
   const [opened, setOpened] = useState(false);
   const [active, setActived] = useState(0);
   const [perfilActivo,setPerfilActivo] = useState('')
-  const [transitionsExist, setTransitionsExist] = useState(false)
   const [activeAddProfile, setActiveAddProfile] = useState(0)
-  const [transitionsActivas,setTransitionsActivas] = useState(new Array())
   
 const handleAddProfile = (profile) => {
   
   setPerfilActivo(profile)
   api.addProfile(toHex(profile))
 }
-const handleRemoveTransition = (test,perfil) =>{
-  
-  
-  api.removeTransition(test)
+const handleRemoveTransition = (initial,final) =>{
+  api.removeTransition(initial,final);
   
 }
-const handleAddTransition = (hash,initial,final,time,contribution) =>{
-  api.addTransition(hash, initial,final,time,contribution)
+const handleAddTransition = (initial,final,time,contribution) =>{
+  api.addTransition(initial,final,time,contribution)
 }
 
 const cambiarPerfil = (profile) => {
-  
   setPerfilActivo(profile)
-  let transitionsProfile = new Array()
-
-  for(let key in transitions){
-
-    for(let i = 0; i < profiles.length; i++){
-     
-      if(key == soliditySha3(profile,profiles[i]))
-      {
-       
-        setTransitionsExist(true)
-        transitionsProfile.push({finalProfile: profiles[i], hash: soliditySha3(profile,profiles[i])})
-      }
-    }
-    
-  }
-  setTransitionsActivas(transitionsProfile)
-  if(transitionsProfile.length == 0)
-  setTransitionsExist(false)
 }
-
-
-  
   return (
     <Main>
       <BaseLayout>
@@ -88,34 +62,23 @@ const cambiarPerfil = (profile) => {
                   onClick={() => cambiarPerfil(profile)}>
                   {profile}
                   </Button>
-                  <Button
-
-                    onClick={() => {
-                      api.removeProfile(toHex(profile));
-                    }}
-                  >
-                    <IconCross />
+                  <Button onClick={() => {
+                    api.removeProfile(toHex(profile));
+                    }}><IconCross />
                   </Button>
                   </li> 
               ))}
             </ul>
             <Button mode="strong" onClick={() => {setActiveAddProfile(true)
-              setOpened(true)}}>
-              New profile
+              setOpened(true)}}>New profile
             </Button>
           </CardContent>
         </Card>
 
-
         <Card className="padded" width="100%" height="100%">
-         
-        
           <Transitions
           perfilActivo = {perfilActivo}
           transitions = {transitions}
-          transitionsActivas = {transitionsActivas}
-          transitionsExist = {transitionsExist}
-          setTransitionsActivas= {setTransitionsActivas}
           handleRemoveTransition={handleRemoveTransition}
           setActiveAddProfile = {setActiveAddProfile}
           setOpened={setOpened}

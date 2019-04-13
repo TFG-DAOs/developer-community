@@ -29,51 +29,33 @@ export const SideBar = ({
           ref={input => (perfilActivo = input)}
         />
         <Button
-          style={{ height: "40PX", marginleft: "" }}
           mode="secondary"
           onClick={() => {
             handleAddProfile(perfilActivo.value);
             setOpened(false);
           }}
-        >
-          Add profile
-        </Button>
+        > Add profile</Button>
       </SidePanelContent>
     ) : (
+
       <SidePanelContent>
         <Text>FinalPofile</Text>
         <DropDown items={profiles} active={active} onChange={setActived} />
         <Text>Time(months)</Text>
         <TextInput
-          style={{
-            height: "40PX",
-            width: "200px",
-            marginLeft: "5px",
-            marginRight: "5px"
-          }}
           type="number"
           ref={input => (_timeCondition = input)}
         />
         <Text>Contributions</Text>
         <TextInput
-          style={{
-            height: "40PX",
-            width: "200px",
-            marginLeft: "5px",
-            marginRight: "5px"
-          }}
           type="number"
           ref={input => (_contributionCondition = input)}
         />
-
         <Buttons>
           <Button
-            style={{ height: "40PX", marginleft: "" }}
             mode="strong"
-            onClick={_aa => {
-              _aa = soliditySha3(perfilActivo, profiles[active]);
+            onClick={() => {
               handleAddTransition(
-                _aa,
                 toHex(perfilActivo),
                 toHex(profiles[active]),
                 _timeCondition.value,
@@ -81,9 +63,7 @@ export const SideBar = ({
               );
               setOpened(false);
             }}
-          >
-            {profiles[active]}
-          </Button>
+          >Add </Button>
         </Buttons>
       </SidePanelContent>
     )}

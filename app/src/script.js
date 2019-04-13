@@ -42,24 +42,22 @@ const reducer = (state, event) => {
       break;
     case "AddTransition":
       {
-        const finalProfile = event.returnValues.test;
-        console.log(finalProfile);
-        const _timeCondition = event.returnValues.timeCondition;
-        const _contributionCondition = event.returnValues.contributionCondition;
-        const _initToFinalProfileExists = true;
-       
+        const finalProfile = toUtf8(event.returnValues.finalProfile);
+        const initialProfile = toUtf8(event.returnValues.initialProfile);
+        const timeCondition = event.returnValues.timeCondition;
+        const contributionCondition = event.returnValues.contributionCondition;
+        const initToFinalProfileExists = true;
+        const conditions = { initToFinalProfileExists, timeCondition, contributionCondition }
         newState = {
           ...state,
           transitions: {
             ...state.transitions,
-            [finalProfile]: {
-              initToFinalProfileExists: _initToFinalProfileExists,
-              timeCondition: _timeCondition,
-              contributionCondition: _contributionCondition
-            }
-             
-          }
-        };
+            [initialProfile]: {
+              ...state.transitions[initialProfile],
+              [finalProfile]: conditions,
+            },
+          },
+        }
       }
       break;
     case "AddMember":
@@ -82,13 +80,19 @@ const reducer = (state, event) => {
       };
       break;
     case "RemoveTransition":
-      const test =event.returnValues.test;
-      delete state.transitions[test]; 
-        newState = {
-        ...state,
-        transitions: state.transitions
-      };
-      break;
+    const _initialProfile = toUtf8(event.returnValues.initialProfile);
+    const _finalProfile = toUtf8(event.returnValues.finalProfile);
+    delete state.transitions[_initialProfile][_finalProfile];
+    let array = Object.values(state.transitions[_initialProfile]);
+    if(array.length == 0)
+      delete state.transitions[_initialProfile];
+    
+    newState = {
+      ...state,
+      transitions: state.transitions,  
+    }
+    console.log(newState);
+    break;
 
     case "AssignProfileToMember":{
       const profile = toUtf8(event.returnValues.profile);
@@ -106,25 +110,27 @@ const reducer = (state, event) => {
     }
       break;
     case "ChangeConditions":
-      {
-        const test = event.returnValues.test;
-        const _initToFinalProfileExists = true;
-        const _timeCondition = event.returnValues.timeCondition;
-        const _contributionCondition = event.returnValues.contributionCondition;
-
-        newState = {
-          ...state,
-          transitions: {
-            ...state.transitions,
-            [test]: {
-              initToFinalProfileExists: _initToFinalProfileExists,
+    {
+      const finalProfile = toUtf8(event.returnValues.finalProfile);
+      const initialProfile = toUtf8(event.returnValues.initialProfile);
+      const _timeCondition = event.returnValues.timeCondition;
+      const _contributionCondition = event.returnValues.contributionCondition;
+      newState = {
+        ...state,
+        transitions: {
+          ...state.transitions,
+          [initialProfile]: {
+            ...state.transitions[initialProfile],
+            [finalProfile]: {
+              ...state.transitions[initialProfile][finalProfile],
               timeCondition: _timeCondition,
-              contributionCondition: _contributionCondition
-            }
-          }
-        };
+              contributionCondition: _contributionCondition,
+            },
+          },
+        },
       }
-      break;
+    }
+    break;
     default:
       newState = state;
   }
