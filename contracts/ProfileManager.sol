@@ -91,16 +91,16 @@ contract ProfileManager is AragonApp {
        emit RemoveProfile(msg.sender, profileToRemove);
     }
 
-     function addMember(address member, bytes32 profile, uint256 creationDate, uint256 contributions) public {
+     function addMember(address member, bytes32 profile, uint256 contributions) public {
 
          //aqui hace falta algun require¿
-         //require(!members[member].exist)
+        require(!members[member].exists);
         members[member].profile = profile;
-        members[member].creationDate = creationDate;
+        members[member].creationDate = now;
         members[member].contributions = contributions;
         members[member].exists = true;
 
-        emit AddMember(msg.sender, member, profile, creationDate, contributions);
+        emit AddMember(msg.sender, member, profile, members[member].creationDate, contributions);
 
     }
 

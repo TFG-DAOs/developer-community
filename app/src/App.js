@@ -11,10 +11,12 @@ import {
   Text,
   SidePanel,
   IconCross,
-  DropDown
+  DropDown,
+  IdentityBadge
 } from "@aragon/ui";
 import {SideBar} from "./SideBar";
 import {Transitions} from "./Transitions";
+import {Members} from "./Members";
 import styled from "styled-components";
 import { toHex, soliditySha3 } from "web3-utils";
 
@@ -25,7 +27,7 @@ function App() {
   */
   let  _finalProfile, _initialProfile, _timeCondition, _contributionCondition, _newTimeCondition, _newContributionCondition;
   const { api, appState } = useAragonApi();
-  const {profiles,transitions, syncing } = appState;
+  const {profiles,transitions,members, syncing } = appState;
   const [opened, setOpened] = useState(false);
   const [active, setActived] = useState(0);
   const [perfilActivo,setPerfilActivo] = useState('')
@@ -76,6 +78,10 @@ const cambiarPerfil = (profile) => {
             <Button mode="strong" onClick={() => {setActiveAddProfile(true)
               setOpened(true)}}>New profile
             </Button>
+            <Button mode="strong" onClick={() => {
+              console.log("POR AQUIII");
+              api.addMember("0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb",toHex("SP"),3);
+            }}>Add a Member</Button>
           </CardContent>
         </Card>
 
@@ -88,8 +94,14 @@ const cambiarPerfil = (profile) => {
           setOpened={setOpened}
           setMode={setMode}
           />
-        
         </Card>
+
+        <Members 
+        members = {members}
+        activeProfile = {perfilActivo}
+        />
+
+
       </BaseLayout>
       <SideBar
         activeAddProfile={activeAddProfile}
