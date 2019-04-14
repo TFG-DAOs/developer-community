@@ -32,12 +32,17 @@ function App() {
   const [active, setActived] = useState(0);
   const [perfilActivo,setPerfilActivo] = useState('')
   const [activeAddProfile, setActiveAddProfile] = useState(0)
+  const [activeAddMember, setActiveAddMember] = useState(0)
   const [mode, setMode] = useState('Transition')
   
 const handleAddProfile = (profile) => {
   
   setPerfilActivo(profile)
   api.addProfile(toHex(profile))
+}
+const handleAddMember = (member) => {
+  console.log(member);
+  api.addMember(String(member));
 }
 const handleRemoveTransition = (initial,final) =>{
   api.removeTransition(initial,final);
@@ -75,13 +80,19 @@ const cambiarPerfil = (profile) => {
                   </li> 
               ))}
             </ul>
-            <Button mode="strong" onClick={() => {setActiveAddProfile(true)
-              setOpened(true)}}>New profile
+            <Button mode="strong" onClick={() => {
+              setActiveAddProfile(true)
+              setOpened(true)
+              setActiveAddMember(false);
+              }}>New profile
+              
             </Button>
             <Button mode="strong" onClick={() => {
               console.log("POR AQUIII");
-              api.addMember("0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb",toHex("SP"),3);
-            }}>Add a Member</Button>
+              setActiveAddProfile(true)
+              setActiveAddMember(true)
+              setOpened(true)            
+            }}>Add Member</Button>
           </CardContent>
         </Card>
 
@@ -95,20 +106,21 @@ const cambiarPerfil = (profile) => {
           setMode={setMode}
           />
         </Card>
-
-        <Members 
-        members = {members}
-        activeProfile = {perfilActivo}
-        />
-
-
+        
+          <Members 
+            members = {members}
+            activeProfile = {perfilActivo}
+          />
+        
       </BaseLayout>
       <SideBar
         activeAddProfile={activeAddProfile}
+        activeAddMember = {activeAddMember}
         setActiveAddProfile={setActiveAddProfile}
         opened={opened}
         perfilActivo={perfilActivo}
         handleAddProfile={handleAddProfile}
+        handleAddMember={handleAddMember}
         setOpened={setOpened}
         active={active}
         setActived={setActived}

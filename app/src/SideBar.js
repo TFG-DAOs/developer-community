@@ -5,10 +5,12 @@ import { toHex, soliditySha3 } from "web3-utils";
 
 export const SideBar = ({
   activeAddProfile,
+  activeAddMember,
   setActiveAddProfile,
   opened,
   perfilActivo,
   handleAddProfile,
+  handleAddMember,
   setOpened,
   active,
   setActived,
@@ -17,7 +19,8 @@ export const SideBar = ({
   handleChangeConditions,
   mode,
   _contributionCondition,
-  _timeCondition
+  _timeCondition,
+  memberToAdd
 }) => (
     <SidePanel
       title="New Profile"
@@ -26,28 +29,47 @@ export const SideBar = ({
     >
       {activeAddProfile ? (
         <SidePanelContent>
-          <TextInput
-            placeholder="Profile Name"
-            ref={input => (perfilActivo = input)}
-          />
-          <Button
-            mode="secondary"
-            onClick={() => {
-              handleAddProfile(perfilActivo.value);
-              setOpened(false);
-            }}
-          > Add profile</Button>
+          {!activeAddMember ? (
+            <React.Fragment>
+              <TextInput
+                placeholder="Profile Name"
+                ref={input => (perfilActivo = input)}
+              />
+              <Button
+                mode="secondary"
+                onClick={() => {
+                  handleAddProfile(perfilActivo.value);
+                  setOpened(false);
+                }}
+              > Add profile</Button>
+            </React.Fragment>
+              ):(<React.Fragment>
+                  <TextInput
+                    placeholder="Member Address"
+                    ref={inputMember => (memberToAdd = inputMember)}
+                  />
+                  <Button
+                    mode="secondary"
+                    onClick={() => {
+                      handleAddMember(memberToAdd.value);
+                      setOpened(false);
+                    }}
+                > Add Member</Button>
+               </React.Fragment>
+              )}
         </SidePanelContent>
+        
       ) : (
 
           <SidePanelContent>
             <Text>FinalPofile</Text>
             <DropDown items={profiles} active={active} onChange={setActived} />
-            <Text>Time(months)</Text>
-            <TextInput
-              type="number"
-              ref={input => (_timeCondition = input)}
-            />
+            
+              <Text>Time(months)</Text>
+              <TextInput
+                type="number"
+                ref={input => (_timeCondition = input)}
+              />
             <Text>Contributions</Text>
             <TextInput
               type="number"

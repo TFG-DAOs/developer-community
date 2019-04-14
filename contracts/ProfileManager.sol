@@ -91,16 +91,15 @@ contract ProfileManager is AragonApp {
        emit RemoveProfile(msg.sender, profileToRemove);
     }
 
-     function addMember(address member, bytes32 profile, uint256 contributions) public {
-
-         //aqui hace falta algun require¿
+     function addMember(address member) public {
         require(!members[member].exists);
-        members[member].profile = profile;
+        require(profiles["AN"]);
+        members[member].profile = "AN";
         members[member].creationDate = now;
-        members[member].contributions = contributions;
+        members[member].contributions = 0;
         members[member].exists = true;
 
-        emit AddMember(msg.sender, member, profile, members[member].creationDate, contributions);
+        emit AddMember(msg.sender, member, members[member].profile, members[member].creationDate, members[member].contributions);
 
     }
 
@@ -108,7 +107,7 @@ contract ProfileManager is AragonApp {
         require(members[member].exists);
           //check if new profile can be assign to member given his current profile.
         bytes32 memberProfile = members[member].profile;
-         bytes32 _hash = keccak256(memberProfile,profile);
+        bytes32 _hash = keccak256(memberProfile,profile);
         require(transitionRegister[_hash].initToFinalProfileExists);
         members[member].profile = profile;
         emit AssignProfileToMember(msg.sender, member, profile);  
