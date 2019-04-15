@@ -16,6 +16,7 @@ import {
 } from "@aragon/ui";
 import {SideBar} from "./SideBar";
 import {Transitions} from "./Transitions";
+import {ChangeProfile} from "./ChangeProfile";
 import {Members} from "./Members";
 import styled from "styled-components";
 import { toHex, soliditySha3 } from "web3-utils";
@@ -34,7 +35,15 @@ function App() {
   const [activeAddProfile, setActiveAddProfile] = useState(0)
   const [activeAddMember, setActiveAddMember] = useState(0)
   const [mode, setMode] = useState('Transition')
+  const [goUp, setGoUp] = useState(false);
+  const [_member, setMember] = useState('');
   
+  const handleAscend = (member) => {
+    
+  }
+  const handleAsignProfileToMember = (member,profile) => {
+    api.assignProfileToMember(member,toHex(profile))
+  }
 const handleAddProfile = (profile) => {
   
   setPerfilActivo(profile)
@@ -110,9 +119,24 @@ const cambiarPerfil = (profile) => {
           <Members 
             members = {members}
             activeProfile = {perfilActivo}
+            handleAscend = {handleAscend}
+            setGoUp = {setGoUp}
+            setMember = {setMember}
+
           />
         
       </BaseLayout>
+      <ChangeProfile
+        handleAsignProfileToMember ={handleAsignProfileToMember}
+        active={active}
+        setActived={setActived}
+        goUp = {goUp}
+        setGoUp = {setGoUp}
+        member = {_member}
+        profiles = {profiles}
+      
+      
+      />
       <SideBar
         activeAddProfile={activeAddProfile}
         activeAddMember = {activeAddMember}

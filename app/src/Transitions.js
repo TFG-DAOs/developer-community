@@ -78,6 +78,9 @@ export const Transitions = ({
         setOpened(true)
       }}>Edit Conditions</Button>
       </Buttons>
+      
+
+    
     </AppView>
   );
 

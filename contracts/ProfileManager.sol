@@ -93,8 +93,8 @@ contract ProfileManager is AragonApp {
 
      function addMember(address member) public {
         require(!members[member].exists);
-        require(profiles["AN"]);
-        members[member].profile = "AN";
+        require(profiles["Anonimo"]);
+        members[member].profile = "Anonimo";
         members[member].creationDate = now;
         members[member].contributions = 0;
         members[member].exists = true;
@@ -104,18 +104,24 @@ contract ProfileManager is AragonApp {
     }
 
     function assignProfileToMember(address member, bytes32 profile) public {
-        require(members[member].exists);
+        require(members[member].exists, "EL MIEMBRO NO EXISTE");
           //check if new profile can be assign to member given his current profile.
         bytes32 memberProfile = members[member].profile;
         bytes32 _hash = keccak256(memberProfile,profile);
-        require(transitionRegister[_hash].initToFinalProfileExists);
+        uint256 requestTime = ((now - members[member].creationDate))/60;
+        require(transitionRegister[_hash].initToFinalProfileExists, "LA TRANSICION NO EXISTE");
+        require(transitionRegister[_hash].requestedTime >= requestTime, "TODAVIA NO HA CUMPLIDO EL TIEMPO REQUERIDO");
+        require(transitionRegister[_hash].requestedContributions <= members[member].contributions, "TODAVIA NO TIENE LAS CONTRIBUCIONES REQUERIDAS");
         members[member].profile = profile;
-        emit AssignProfileToMember(msg.sender, member, profile);  
+        members[member].creationDate = now;
+        members[member].contributions = 0;
+        
         //check profile restrictions (time, contributions, etc).
        // Conditions c = transitionRegister[profile][members[member].profile];
         //require(c.initToFinalProfileExists);
        // require(c.requestedTime <= members[member].creationDate);
         //require(c.requestedContributions <= members[member].contributions);
+        emit AssignProfileToMember(msg.sender, member, profile);  
     }
 
     function addTransition(bytes32 initialProfile, bytes32 finalProfile, uint256 timeCondition, uint256 contributionCondition) public {
