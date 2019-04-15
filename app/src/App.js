@@ -89,19 +89,21 @@ const cambiarPerfil = (profile) => {
                   </li> 
               ))}
             </ul>
-            <Button mode="strong" onClick={() => {
-              setActiveAddProfile(true)
-              setOpened(true)
-              setActiveAddMember(false);
-              }}>New profile
-              
-            </Button>
-            <Button mode="strong" onClick={() => {
-              console.log("POR AQUIII");
-              setActiveAddProfile(true)
-              setActiveAddMember(true)
-              setOpened(true)            
-            }}>Add Member</Button>
+            <ContainerButtons>
+              <Button mode="strong" style = {{width: "70%"}}onClick={() => {
+                setActiveAddProfile(true)
+                setOpened(true)
+                setActiveAddMember(false);
+                }}>New profile
+                
+              </Button>
+              <Button mode="strong" style={{marginTop: "5%", width: "70%"}} onClick={() => {
+                console.log("POR AQUIII");
+                setActiveAddProfile(true)
+                setActiveAddMember(true)
+                setOpened(true)            
+            }} >Add Member</Button>
+            </ContainerButtons>
           </CardContent>
         </Card>
 
@@ -175,7 +177,13 @@ const CardContent = styled.div`
     text-align: center;
   `;
 
-
+const ContainerButtons = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    width:100%;
+    justify-content:center;
+    align-items:center;
+`;
 const Syncing = styled.div.attrs({ children: "Syncing…" })`
         position: absolute;
         top: 15px;

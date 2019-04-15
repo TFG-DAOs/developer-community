@@ -13,7 +13,7 @@ export const ChangeProfile = ({
     handleAsignProfileToMember,
 }) => (
         <SidePanel
-            title="New Profile"
+            title="Assign a Profile to a Member"
             opened={goUp}
             onClose={() => setGoUp(false)}
         >
@@ -29,7 +29,7 @@ export const ChangeProfile = ({
                             handleAsignProfileToMember(member,toHex(profiles[active]));
                             setGoUp(false);
                         }}
-                    >Ascend</Button>
+                    >Assign</Button>
                 </Buttons>
                 </Content>
             </SidePanelContent>

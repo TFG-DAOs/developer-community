@@ -108,9 +108,9 @@ contract ProfileManager is AragonApp {
           //check if new profile can be assign to member given his current profile.
         bytes32 memberProfile = members[member].profile;
         bytes32 _hash = keccak256(memberProfile,profile);
-        uint256 requestTime = ((now - members[member].creationDate))/60;
+        uint256 requestTime = ((now - members[member].creationDate))/(3600*24*30);
         require(transitionRegister[_hash].initToFinalProfileExists, "LA TRANSICION NO EXISTE");
-        require(transitionRegister[_hash].requestedTime >= requestTime, "TODAVIA NO HA CUMPLIDO EL TIEMPO REQUERIDO");
+        require(transitionRegister[_hash].requestedTime <= requestTime, "TODAVIA NO HA CUMPLIDO EL TIEMPO REQUERIDO");
         require(transitionRegister[_hash].requestedContributions <= members[member].contributions, "TODAVIA NO TIENE LAS CONTRIBUCIONES REQUERIDAS");
         members[member].profile = profile;
         members[member].creationDate = now;
