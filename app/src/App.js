@@ -41,6 +41,9 @@ function App() {
   const handleAscend = (member) => {
     
   }
+  const handleIncrementContributionsMember= (member) =>{
+    api.incrementContributionsMember(String(member));
+  }
   const handleAsignProfileToMember = (member,profile) => {
     api.assignProfileToMember(member,toHex(profile))
   }
@@ -127,6 +130,7 @@ const cambiarPerfil = (profile) => {
                 handleAscend = {handleAscend}
                 setGoUp = {setGoUp}
                 setMember = {setMember}
+                handleIncrementContributionsMember = {handleIncrementContributionsMember}
 
               />
         </Card>

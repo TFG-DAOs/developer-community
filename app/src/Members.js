@@ -7,7 +7,7 @@ import {
     Text,
     TableRow,
     TableCell,
-    IconSettings
+    IconPlus
 } from "@aragon/ui";
 import { toHex } from "web3-utils";
 import styled from "styled-components";
@@ -17,7 +17,7 @@ export const Members = ({
     activeProfile,
     setMember,
     setGoUp,
-
+    handleIncrementContributionsMember
   }) => (
     <AppView style={{display:"flex", justifyContent:"center", height: "auto"}}title = "MEMBERS">
     <Table
@@ -48,6 +48,11 @@ export const Members = ({
           </TableCell>
           <TableCell>
             <Text>{members[member].contributions}</Text>
+            <Button mode="outline" style={{padding: "4px"}}onClick={()=>{
+              handleIncrementContributionsMember(member);
+            }}
+            ><IconPlus/>
+            </Button>
           </TableCell>
           <TableCell>
             <Button mode = "outline" style={{ alignContent: "center"}} onClick={() => {

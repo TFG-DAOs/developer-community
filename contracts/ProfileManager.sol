@@ -14,11 +14,12 @@ contract ProfileManager is AragonApp {
     event RemoveTransition(address indexed entity, bytes32 initialProfile, bytes32 finalProfile);
     event AssignProfileToMember(address indexed entity, address member, bytes32 profile);
     event AddMember(address indexed entity, address member, bytes32 profile, uint256 creationDate, uint256 contributions);
-    
+    event IncrementContributionsMember(address indexed entity, address member, uint256 contributions);
     //event RemoveProfile(address indexed entity, bytes32 profile);
 
 
     mapping(bytes32 => bool) profiles;
+    bytes32 defaultProfile = "Anonimo";
 
     struct Member {
         bytes32 profile;
@@ -123,6 +124,14 @@ contract ProfileManager is AragonApp {
        // require(c.requestedTime <= members[member].creationDate);
         //require(c.requestedContributions <= members[member].contributions);
         emit AssignProfileToMember(msg.sender, member, profile);  
+    }
+
+    function incrementContributionsMember(address member){
+        require(members[member].exists);
+
+        members[member].contributions += 1;
+
+        emit IncrementContributionsMember(msg.sender, member,members[member].contributions);
     }
 
     function addTransition(bytes32 initialProfile, bytes32 finalProfile, uint256 timeCondition, uint256 contributionCondition) public {

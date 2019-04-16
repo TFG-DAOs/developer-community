@@ -8,11 +8,12 @@ const api = new AragonApi();
 
 const reducer = (state, event) => {
   let newState;
+  let defaultProfile = "Anonimo";
   console.log(state, event);
   switch (event.event) {
     case INITIALIZATION_TRIGGER:
       newState = {
-        profiles: ["Anonimo"],
+        profiles: [defaultProfile],
         transitions: {},
         members: {}
       };
@@ -109,6 +110,22 @@ const reducer = (state, event) => {
       };
     }
       break;
+    case "IncrementContributionsMember":{
+      const member = event.returnValues.member;
+      const contributions = event.returnValues.contributions;
+
+      newState={
+        ...state,
+        members:{
+          ...state.members,
+          [member]:{
+            ...state.members[member],
+            contributions: contributions
+          }
+        }
+      };
+    }
+    break;
     case "ChangeConditions":
     {
       const finalProfile = toUtf8(event.returnValues.finalProfile);
