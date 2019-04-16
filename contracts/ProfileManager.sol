@@ -19,7 +19,7 @@ contract ProfileManager is AragonApp {
 
 
     mapping(bytes32 => bool) profiles;
-    bytes32 defaultProfile = "Anonimo";
+    
 
     struct Member {
         bytes32 profile;
@@ -46,8 +46,11 @@ contract ProfileManager is AragonApp {
     mapping(bytes32 => Conditions) transitionRegister;
 
     function initialize() onlyInit public {
-        profiles["Anonimo"] = true;
+        bytes32 defaultProfile = "Anonimo";
+        profiles[defaultProfile] = true;
+        arrayProfiles.push(defaultProfile);
         initialized();
+        
     }
      /**
       * @notice Add "`@fromHex(newProfile)`" as a new profile
