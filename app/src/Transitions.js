@@ -23,7 +23,7 @@ export const Transitions = ({
   setOpened,
   setMode,
 }) => (
-    <AppView title={perfilActivo.toUpperCase()}>
+    <AppView style={{height: "auto"}}title={perfilActivo.toUpperCase()}>
       {transitions[perfilActivo]!== undefined ? (
         <Table
           style = {{width: "100%"}}

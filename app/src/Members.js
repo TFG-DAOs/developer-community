@@ -19,7 +19,7 @@ export const Members = ({
     setGoUp,
 
   }) => (
-    <AppView style={{display:"flex", justifyContent:"center"}}title = "MEMBERS">
+    <AppView style={{display:"flex", justifyContent:"center", height: "auto"}}title = "MEMBERS">
     <Table
       header={
         <TableRow>
