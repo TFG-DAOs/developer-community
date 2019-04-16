@@ -69,12 +69,11 @@ const cambiarPerfil = (profile) => {
 }
   return (
     <Main>
-      <BaseLayout>
+      <BaseLayout>       
         {syncing && <Syncing />}
-
-        <Card style={{ height: "100%", width: "300px" }}>
+        <Card style={styleCardLeft}>
           <CardContent>
-            <ul>
+            <ul style={{textAlign:"left"}}>
               {profiles.map(profile => (
                 <li>
                    <Button
@@ -82,32 +81,26 @@ const cambiarPerfil = (profile) => {
                   onClick={() => cambiarPerfil(profile)}>
                   {profile}
                   </Button>
-                  <Button onClick={() => {
+                  <Button style={{float: "right"}} onClick={() => {
                     api.removeProfile(toHex(profile));
-                    }}><IconCross />
+                    }}><IconCross/>
                   </Button>
                   </li> 
               ))}
             </ul>
             <ContainerButtons>
-              <Button mode="strong" style = {{width: "70%"}}onClick={() => {
+              <Button mode="strong" style = {{width: "100%"}}onClick={() => {
                 setActiveAddProfile(true)
                 setOpened(true)
                 setActiveAddMember(false);
                 }}>New profile
                 
               </Button>
-              <Button mode="strong" style={{marginTop: "5%", width: "70%"}} onClick={() => {
-                console.log("POR AQUIII");
-                setActiveAddProfile(true)
-                setActiveAddMember(true)
-                setOpened(true)            
-            }} >Add Member</Button>
             </ContainerButtons>
           </CardContent>
         </Card>
-
-        <Card className="padded" width="100%" height="100%">
+        
+        <Card className="padded" width="80%" height="auto">
           <Transitions
           perfilActivo = {perfilActivo}
           transitions = {transitions}
@@ -117,15 +110,26 @@ const cambiarPerfil = (profile) => {
           setMode={setMode}
           />
         </Card>
-        
-          <Members 
-            members = {members}
-            activeProfile = {perfilActivo}
-            handleAscend = {handleAscend}
-            setGoUp = {setGoUp}
-            setMember = {setMember}
+        <Card style={styleCardLeft}>
+          <CardContent>
+            <Button mode="strong" style={{width: "100%"}} onClick={() => {
+                  console.log("POR AQUIII");
+                  setActiveAddProfile(true)
+                  setActiveAddMember(true)
+                  setOpened(true)            
+              }} >Add Member</Button>
+          </CardContent>
+          </Card>
+          <Card style={{width:"80%", height:"auto"}}>
+            <Members 
+                members = {members}
+                activeProfile = {perfilActivo}
+                handleAscend = {handleAscend}
+                setGoUp = {setGoUp}
+                setMember = {setMember}
 
-          />
+              />
+        </Card>
         
       </BaseLayout>
       <ChangeProfile
@@ -135,9 +139,7 @@ const cambiarPerfil = (profile) => {
         goUp = {goUp}
         setGoUp = {setGoUp}
         member = {_member}
-        profiles = {profiles}
-      
-      
+        profiles = {profiles}    
       />
       <SideBar
         activeAddProfile={activeAddProfile}
@@ -161,19 +163,27 @@ const cambiarPerfil = (profile) => {
   );
 }
 
+const styleCardLeft = {
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "center",
+      alignItems: "center",
+      width: "20%",
+      height:"auto"
+}
 const BaseLayout = styled.div`
       display: flex;
-      height: 100vh;
+      height: auto;
       flex-direction: row;
-  TextInput {
-        height: 60px;
-    }
+      flex-wrap: wrap;
+      TextInput {
+            height: 60px;
+        }
   
   `;
 
 
 const CardContent = styled.div`
-    margin-top: 200px;
     text-align: center;
   `;
 

@@ -45,6 +45,7 @@ contract ProfileManager is AragonApp {
     mapping(bytes32 => Conditions) transitionRegister;
 
     function initialize() onlyInit public {
+        profiles["Anonimo"] = true;
         initialized();
     }
      /**

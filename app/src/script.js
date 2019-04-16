@@ -12,7 +12,7 @@ const reducer = (state, event) => {
   switch (event.event) {
     case INITIALIZATION_TRIGGER:
       newState = {
-        profiles: [],
+        profiles: ["Anonimo"],
         transitions: {},
         members: {}
       };

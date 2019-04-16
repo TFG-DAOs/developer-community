@@ -23,9 +23,10 @@ export const Transitions = ({
   setOpened,
   setMode,
 }) => (
-    <AppView title={perfilActivo}>
+    <AppView title={perfilActivo.toUpperCase()}>
       {transitions[perfilActivo]!== undefined ? (
         <Table
+          style = {{width: "100%"}}
           header={
             <TableRow>
               <TableCell>
@@ -84,7 +85,7 @@ export const Transitions = ({
     </AppView>
   );
 
-
+ 
   const Buttons = styled.div`
   display: grid;
   grid-auto-flow: column;
