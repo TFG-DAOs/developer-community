@@ -20,10 +20,12 @@ export const SideBar = ({
   mode,
   _contributionCondition,
   _timeCondition,
-  memberToAdd
+  memberToAdd,
+  sidePanelTitle,
+  finalProfileConditions
 }) => (
     <SidePanel
-      title="New Profile"
+      title={sidePanelTitle}
       opened={opened}
       onClose={() => setOpened(false)}
     >
@@ -62,9 +64,7 @@ export const SideBar = ({
       ) : (
 
           <SidePanelContent>
-            <Text>FinalPofile</Text>
-            <DropDown items={profiles} active={active} onChange={setActived} />
-            
+           
               <Text>Time(months)</Text>
               <TextInput
                 type="number"
@@ -76,7 +76,11 @@ export const SideBar = ({
               ref={input => (_contributionCondition = input)}
             />
             {mode == 'Transitions' ? (
+              
               <Buttons>
+                 <Text>Final Pofile</Text>
+               <DropDown items={profiles} active={active} onChange={setActived} />
+               
                 <Button
                   mode="strong"
                   onClick={() => {
@@ -98,7 +102,7 @@ export const SideBar = ({
                 onClick={() => {
                   handleChangeConditions(
                     toHex(perfilActivo),
-                    toHex(profiles[active]),
+                    finalProfileConditions,
                     _timeCondition.value,
                     _contributionCondition.value
                   );

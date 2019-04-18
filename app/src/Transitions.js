@@ -10,7 +10,8 @@ import {
   TableRow,
   Text,
   Card,
-  AppView
+  AppView,
+  IconSettings,
 } from "@aragon/ui";
 import styled from "styled-components";
 import { toHex } from "web3-utils";
@@ -22,6 +23,8 @@ export const Transitions = ({
   setActiveAddProfile,
   setOpened,
   setMode,
+  setSidePanelTitle,
+  setFinalProfileConditions
 }) => (
     <AppView style={{height: "auto"}}title={perfilActivo.toUpperCase()}>
       {transitions[perfilActivo]!== undefined ? (
@@ -39,7 +42,7 @@ export const Transitions = ({
                 <Text>CONTRIBUTION CONDITION</Text>
               </TableCell>
               <TableCell>
-                <Text>REMOVE</Text>
+                <Text>SETTINGS</Text>
               </TableCell>
             </TableRow>
           }
@@ -55,30 +58,38 @@ export const Transitions = ({
               <TableCell>
                 <Text>{transitions[perfilActivo][finalProfile].contributionCondition}</Text>
               </TableCell>
-              <TableCell>
+              <TableCell> <Button onClick={() => {
+                  setActiveAddProfile(false)
+                  setMode('Conditions')
+                  setSidePanelTitle('Change Conditions')
+                  setFinalProfileConditions(toHex(finalProfile))
+                  setOpened(true)
+                }}
+                ><IconSettings /></Button>
               <Button onClick={() => {
                   handleRemoveTransition(toHex(perfilActivo), toHex(finalProfile))}}
                 ><IconCross /></Button>
+             
               </TableCell>
             </TableRow>
           ))}
+          
+            <Button mode="strong" onClick={() => {
+        setActiveAddProfile(false)
+        setMode('Transitions')
+        setSidePanelTitle('New Transition')
+        setOpened(true)
+      }}>Add Transition</Button>
+
 
         </Table>
       ) : (
           <Text> NO HAY TRANSICIONES A OTROS PERFILES</Text>
         )}
-        <Buttons>
-      <Button mode="strong" onClick={() => {
-        setActiveAddProfile(false)
-        setMode('Transitions')
-        setOpened(true)
-      }}>Add Transition</Button>
-      <Button mode="strong" onClick={() => {
-        setActiveAddProfile(false)
-        setMode('Conditions')
-        setOpened(true)
-      }}>Edit Conditions</Button>
-      </Buttons>
+      
+      
+     
+     
       
 
     

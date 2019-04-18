@@ -37,7 +37,8 @@ function App() {
   const [mode, setMode] = useState('Transition')
   const [goUp, setGoUp] = useState(false);
   const [_member, setMember] = useState('');
-  
+  const [sidePanelTitle, setSidePanelTitle] = useState('')
+  const [finalProfileConditions, setFinalProfileConditions] = useState('')
   const handleAscend = (member) => {
     
   }
@@ -96,6 +97,7 @@ const cambiarPerfil = (profile) => {
                 setActiveAddProfile(true)
                 setOpened(true)
                 setActiveAddMember(false);
+                setSidePanelTitle('New Profile')
                 }}>New profile
                 
               </Button>
@@ -111,6 +113,8 @@ const cambiarPerfil = (profile) => {
           setActiveAddProfile = {setActiveAddProfile}
           setOpened={setOpened}
           setMode={setMode}
+          setSidePanelTitle = {setSidePanelTitle}
+          setFinalProfileConditions = {setFinalProfileConditions}
           />
         </Card>
         <Card style={styleCardLeft}>
@@ -119,7 +123,8 @@ const cambiarPerfil = (profile) => {
                   console.log("POR AQUIII");
                   setActiveAddProfile(true)
                   setActiveAddMember(true)
-                  setOpened(true)            
+                  setOpened(true)  
+                  setSidePanelTitle('New Member')          
               }} >Add Member</Button>
           </CardContent>
           </Card>
@@ -160,6 +165,8 @@ const cambiarPerfil = (profile) => {
         handleAddTransition={handleAddTransition}
         handleChangeConditions={handleChangeConditions}
         mode={mode}
+        sidePanelTitle = {sidePanelTitle}
+        finalProfileConditions = {finalProfileConditions}
         
         />
 
