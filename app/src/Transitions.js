@@ -72,21 +72,18 @@ export const Transitions = ({
              
               </TableCell>
             </TableRow>
-          ))}
-          
-            <Button mode="strong" onClick={() => {
+          ))}   
+        </Table>
+      ) : (
+          <Text> NO HAY TRANSICIONES A OTROS PERFILES</Text>
+        )}
+
+      <Button mode="strong" style={{textAlign: "center", width: "15%", marginTop:"2%"}}onClick={() => {
         setActiveAddProfile(false)
         setMode('Transitions')
         setSidePanelTitle('New Transition')
         setOpened(true)
       }}>Add Transition</Button>
-
-
-        </Table>
-      ) : (
-          <Text> NO HAY TRANSICIONES A OTROS PERFILES</Text>
-        )}
-      
       
      
      

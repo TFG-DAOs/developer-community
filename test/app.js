@@ -1,7 +1,7 @@
 /* global artifacts contract before beforeEach it assert */
 const { assertRevert } = require('@aragon/test-helpers/assertThrow')
 
-const CounterApp = artifacts.require('CounterApp.sol')
+const ProfileManager = artifacts.require('ProfileManager.sol')
 const DAOFactory = artifacts.require(
   '@aragon/core/contracts/factory/DAOFactory'
 )
@@ -15,7 +15,13 @@ const getContract = name => artifacts.require(name)
 
 const ANY_ADDR = '0xffffffffffffffffffffffffffffffffffffffff'
 
-contract('CounterApp', accounts => {
+const checkEvent = (receipt, eventName, expectedArgs) => {
+  const events = receipt.logs.filter(x => x.event === eventName)
+  assert.equal(events.length, 1, `should have emitted ${eventName} event`)
+  assert.deepEqual(events[0].args, expectedArgs)
+}
+
+contract('ProfileManager', accounts => {
   let APP_MANAGER_ROLE, INCREMENT_ROLE, DECREMENT_ROLE
   let daoFact, appBase, app
 
@@ -31,12 +37,10 @@ contract('CounterApp', accounts => {
       aclBase.address,
       regFact.address
     )
-    appBase = await CounterApp.new()
+    appBase = await ProfileManager.new()
 
     // Setup constants
     APP_MANAGER_ROLE = await kernelBase.APP_MANAGER_ROLE()
-    INCREMENT_ROLE = await appBase.INCREMENT_ROLE()
-    DECREMENT_ROLE = await appBase.DECREMENT_ROLE()
   })
 
   beforeEach(async () => {
@@ -57,28 +61,27 @@ contract('CounterApp', accounts => {
       false,
       { from: root }
     )
-    app = CounterApp.at(
+    app = ProfileManager.at(
       receipt.logs.filter(l => l.event === 'NewAppProxy')[0].args.proxy
     )
 
-    await acl.createPermission(ANY_ADDR, app.address, INCREMENT_ROLE, root, {
-      from: root,
-    })
-    await acl.createPermission(ANY_ADDR, app.address, DECREMENT_ROLE, root, {
-      from: root,
+  })
+
+  it('should be add a Profile', async () => {
+    app.initialize()
+    const sup = web3.fromUtf8("Support")
+    const receipt = await app.addProfile(sup)
+    assert.equal(await (app.profiles(sup)), true)
+
+    checkEvent(receipt,"AddProfile",{
+      entity: root,
+      profile: sup + '0'.repeat(50)
     })
   })
 
-  it('should be incremented', async () => {
+  it('should be exists a default "Anonimo" profile', async () => {
     app.initialize()
-    await app.increment(1)
-    assert.equal(await app.value(), 1)
-  })
-
-  it('should not be decremented if already 0', async () => {
-    app.initialize()
-    return assertRevert(async () => {
-      return app.decrement(1)
-    })
+    const defaultProfile = web3.fromUtf8("Anonimo")
+    assert.equal(await (app.profiles(defaultProfile)), true)
   })
 })

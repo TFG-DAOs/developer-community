@@ -136,6 +136,7 @@ const cambiarPerfil = (profile) => {
                 setGoUp = {setGoUp}
                 setMember = {setMember}
                 handleIncrementContributionsMember = {handleIncrementContributionsMember}
+                transitions = {transitions}
 
               />
         </Card>

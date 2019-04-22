@@ -7,7 +7,9 @@ import {
     Text,
     TableRow,
     TableCell,
-    IconPlus
+    IconPlus,
+    Toast,
+    ToastHub
 } from "@aragon/ui";
 import { toHex } from "web3-utils";
 import styled from "styled-components";
@@ -17,7 +19,8 @@ export const Members = ({
     activeProfile,
     setMember,
     setGoUp,
-    handleIncrementContributionsMember
+    handleIncrementContributionsMember,
+    transitions
   }) => (
     <AppView style={{display:"flex", justifyContent:"center", height: "auto"}}title = "MEMBERS">
     <Table
@@ -38,13 +41,13 @@ export const Members = ({
             </TableRow>
       }
     >
-      {Object.keys(members).filter(m => (members[m].profile == activeProfile)).map( member => (
+      {Object.keys(members).filter(m => (members[m].profile == activeProfile)).map(member => (
         <TableRow>
           <TableCell>
             <IdentityBadge entity={member} customLabel="true"/>
           </TableCell>
           <TableCell>
-            <Text>{members[member].creationDate}</Text>
+            <Text>{Math.trunc((((Date.now()/1000) - members[member].creationDate)/(3600*24)))}</Text>
           </TableCell>
           <TableCell>
             <Text>{members[member].contributions}</Text>
@@ -55,11 +58,23 @@ export const Members = ({
             </Button>
           </TableCell>
           <TableCell>
-            <Button mode = "outline" style={{ alignContent: "center"}} onClick={() => {
-              setGoUp(true);
-              setMember(member); 
-            }}>Assign
-            </Button>
+            {checkTransit(transitions,activeProfile,members,member)}
+            {(found)? (
+              <Button mode = "outline"                
+              style={{ alignContent: "center"}} 
+              onClick={() => {
+                          setGoUp(true);
+                          setMember(member); 
+                        }}
+              >Assign</Button>
+            ):(<ToastHub>
+                  <Toast>
+                    {toast => (
+                      <Button onClick={() => toast("El miembro " + member + " puede transitar a ningún perfil")}>Assign</Button>
+                    )}
+                  </Toast>
+                </ToastHub>)}
+            
           </TableCell>
         </TableRow>
       ))}
@@ -67,6 +82,27 @@ export const Members = ({
     </AppView>
   );
 
+  let found = false
+  function checkTransit(transitions,activeProfile,members,member) {
+    if(member != undefined){
+      if(transitions[activeProfile] != undefined){
+      //Search for a transition profile
+        for(let key in transitions[activeProfile]){
+          if( transitions[activeProfile][key].timeCondition <= (((Date.now()/1000) - members[member].creationDate)/(3600*24))
+            && transitions[activeProfile][key].contributionCondition  <= members[member].contributions ){
+              found = true;
+          }
+          else{
+            found = false;
+          }
+        } 
+      }
+      else{
+        found = false
+      }
+    }
+                              
+  }
   const Buttons = styled.div`
   align-items: center;
     align-content: center;

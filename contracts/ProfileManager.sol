@@ -18,7 +18,7 @@ contract ProfileManager is AragonApp {
     //event RemoveProfile(address indexed entity, bytes32 profile);
 
 
-    mapping(bytes32 => bool) profiles;
+    mapping(bytes32 => bool) public profiles;
     
 
     struct Member {
@@ -113,7 +113,7 @@ contract ProfileManager is AragonApp {
           //check if new profile can be assign to member given his current profile.
         bytes32 memberProfile = members[member].profile;
         bytes32 _hash = keccak256(memberProfile,profile);
-        uint256 requestTime = ((now - members[member].creationDate))/(3600*24*30);
+        uint256 requestTime = ((now - members[member].creationDate))/(3600*24);
         require(transitionRegister[_hash].initToFinalProfileExists, "LA TRANSICION NO EXISTE");
         require(transitionRegister[_hash].requestedTime <= requestTime, "TODAVIA NO HA CUMPLIDO EL TIEMPO REQUERIDO");
         require(transitionRegister[_hash].requestedContributions <= members[member].contributions, "TODAVIA NO TIENE LAS CONTRIBUCIONES REQUERIDAS");
