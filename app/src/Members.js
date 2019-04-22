@@ -9,7 +9,8 @@ import {
     TableCell,
     IconPlus,
     Toast,
-    ToastHub
+    ToastHub,
+    Timer
 } from "@aragon/ui";
 import { toHex } from "web3-utils";
 import styled from "styled-components";
@@ -47,7 +48,7 @@ export const Members = ({
             <IdentityBadge entity={member} customLabel="true"/>
           </TableCell>
           <TableCell>
-            <Text>{Math.trunc((((Date.now()/1000) - members[member].creationDate)/(3600*24)))}</Text>
+            <Timer start={members[member].creationDate *1000}/>
           </TableCell>
           <TableCell>
             <Text>{members[member].contributions}</Text>
