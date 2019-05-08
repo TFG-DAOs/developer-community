@@ -79,9 +79,47 @@ contract('ProfileManager', accounts => {
     })
   })
 
-  it('should be exists a default "Anonimo" profile', async () => {
-    app.initialize()
-    const defaultProfile = web3.fromUtf8("Anonimo")
+  it('should be exists a default "Anonymous" profile', async () => {
+    await app.initialize()
+    const defaultProfile = web3.fromUtf8("Anonymous")
     assert.equal(await (app.profiles(defaultProfile)), true)
   })
+
+  it('remove', async() =>{
+    app.initialize();
+
+    const sup = web3.fromUtf8("Support")
+    await app.addProfile(sup)
+    
+    const receipt = await app.removeProfile(sup);
+
+    assert.equal(await (app.profiles(sup)), false);
+
+
+  })
+
+  it('addTransiton', async() =>{
+    app.initialize();
+    let initialProfile = web3.toHex("Anonymous")
+
+    let finalProfile = web3.toHex("Support")
+    await app.addProfile(finalProfile)
+
+    const timeCondition = 1
+    const contributionCondition = 3
+
+    const receipt = await app.addTransition(initialProfile,finalProfile,timeCondition,contributionCondition)
+
+    initialProfile = initialProfile + '0'.repeat(50)
+    finalProfile = finalProfile + '0'.repeat(50)
+
+    const hash = web3.sha3(initialProfile + finalProfile, {encoding:"hex"})
+
+    console.log(hash)
+
+    console.log(await (app.transitionRegister(hash)))
+    assert.equal(await (app.transitionRegister(hash))[0], true)
+
+  })
+
 })

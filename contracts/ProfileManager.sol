@@ -5,11 +5,13 @@ import "@aragon/os/contracts/apps/AragonApp.sol";
 contract ProfileManager is AragonApp {
 
     bytes32[] arrayProfiles;
+    bytes32 constant public INCREMENT_ROLE = keccak256("INCREMENT_ROLE");
+    bytes32 constant public DECREMENT_ROLE = keccak256("DECREMENT_ROLE");
 
     //Profile events.
     event AddProfile(address indexed entity, bytes32 profile);
     event RemoveProfile(address indexed entity, bytes32 profile);
-    event AddTransition(address indexed entity, bytes32 initialProfile, bytes32 finalProfile, uint256 timeCondition, uint256 contributionCondition);
+    event AddTransition(address indexed entity, bytes32 initialProfile, bytes32 finalProfile, uint256 timeCondition, uint256 contributionCondition, bytes32 _hash);
     event ChangeConditions(address indexed entity, bytes32 initialProfile, bytes32 finalProfile, uint256 timeCondition, uint256 contributionCondition);
     event RemoveTransition(address indexed entity, bytes32 initialProfile, bytes32 finalProfile);
     event AssignProfileToMember(address indexed entity, address member, bytes32 profile);
@@ -33,20 +35,15 @@ contract ProfileManager is AragonApp {
         bool initToFinalProfileExists;
         uint256 requestedTime; // in days
         uint256 requestedContributions;
-
-    }
-    struct TransitionDetails {
-        mapping(bytes32 =>bool) initialProfiles;
-        //conditions
     }
 
     mapping(address => Member) members;
 
     /*key: destinyProfile | value: (key : initialProfile | value: Necessary conditions to pass from one profile to another)*/
-    mapping(bytes32 => Conditions) transitionRegister;
+    mapping(bytes32 => Conditions) public transitionRegister;
 
     function initialize() onlyInit public {
-        bytes32 defaultProfile = "Anonimo";
+        bytes32 defaultProfile = "Anonymous";
         profiles[defaultProfile] = true;
         arrayProfiles.push(defaultProfile);
         initialized();
@@ -66,16 +63,15 @@ contract ProfileManager is AragonApp {
       * @notice before remove  "`@fromHex(profileToRemove)`", remove transactions contains this profile
       * @param profileToRemove Name of the profile to be added
       */
-
     function removeProfile(bytes32 profileToRemove) public {
-       require(profiles[profileToRemove]);
+       require(profiles[profileToRemove],"Profile doesn't exist");
      
        uint j = 0;
         while(arrayProfiles.length > j){
             bytes32 _hash1 = keccak256(arrayProfiles[j],profileToRemove);//todos los perfiles a profileToRemove
             bytes32 _hash2 = keccak256(profileToRemove,arrayProfiles[j]);
-            require(!transitionRegister[_hash1].initToFinalProfileExists);
-            require(!transitionRegister[_hash2].initToFinalProfileExists); 
+            require(!transitionRegister[_hash1].initToFinalProfileExists,"There are transitions that include this profile");
+            require(!transitionRegister[_hash2].initToFinalProfileExists,"There are transitions that include this profile"); 
             j++;
         }
 
@@ -90,16 +86,19 @@ contract ProfileManager is AragonApp {
                         delete arrayProfiles[arrayProfiles.length-1]; // eliminamos el ultimo
                     }
             i++;
-        
-        
+               
         }
        emit RemoveProfile(msg.sender, profileToRemove);
     }
-
+    
+    /**
+      * @notice Member with address  "`member`" will be added
+      * @param member Address of the member to be added
+      */
      function addMember(address member) public {
-        require(!members[member].exists);
-        require(profiles["Anonimo"]);
-        members[member].profile = "Anonimo";
+        require(!members[member].exists,"The member exists");
+        require(profiles["Anonymous"]);
+        members[member].profile = "Anonymous";
         members[member].creationDate = now;
         members[member].contributions = 0;
         members[member].exists = true;
@@ -108,15 +107,20 @@ contract ProfileManager is AragonApp {
 
     }
 
+    /**
+      * @notice The profile "`profile`" will be assigned to the member "`member`"
+      * @param member Address of the member
+      * @param profile Profile to assign
+      */
     function assignProfileToMember(address member, bytes32 profile) public {
-        require(members[member].exists, "EL MIEMBRO NO EXISTE");
+        require(members[member].exists, "Member doesn't exist");
           //check if new profile can be assign to member given his current profile.
         bytes32 memberProfile = members[member].profile;
         bytes32 _hash = keccak256(memberProfile,profile);
         uint256 requestTime = ((now - members[member].creationDate))/(3600*24);
-        require(transitionRegister[_hash].initToFinalProfileExists, "LA TRANSICION NO EXISTE");
-        require(transitionRegister[_hash].requestedTime <= requestTime, "TODAVIA NO HA CUMPLIDO EL TIEMPO REQUERIDO");
-        require(transitionRegister[_hash].requestedContributions <= members[member].contributions, "TODAVIA NO TIENE LAS CONTRIBUCIONES REQUERIDAS");
+        require(transitionRegister[_hash].initToFinalProfileExists, "The transition doesn't exist");
+        require(transitionRegister[_hash].requestedTime <= requestTime, "The required time has not been reached");
+        require(transitionRegister[_hash].requestedContributions <= members[member].contributions, "The necessary contributions have not yet been made");
         members[member].profile = profile;
         members[member].creationDate = now;
         members[member].contributions = 0;
@@ -129,36 +133,64 @@ contract ProfileManager is AragonApp {
         emit AssignProfileToMember(msg.sender, member, profile);  
     }
 
-    function incrementContributionsMember(address member){
-        require(members[member].exists);
+    /**
+      * @notice Increment one contribution of  "`member`" 
+      * @param member Name of the profile to be added
+    */
+    function incrementContributionsMember(address member) auth (INCREMENT_ROLE){
+        require(members[member].exists,"Member doesn't exist");
 
         members[member].contributions += 1;
 
         emit IncrementContributionsMember(msg.sender, member,members[member].contributions);
     }
 
+    /**
+      * @notice Add transition from profile "`@fromHex(initialProfile)`" to profile "`@fromHex(finalProfile)`" with time "`timeCondition`" and contributions "`contributionCondition`"
+      * @param initialProfile Name of the profile to be added
+      * @param finalProfile sadas
+      * @param timeCondition asdasd
+      * @param contributionCondition asdad
+      */
     function addTransition(bytes32 initialProfile, bytes32 finalProfile, uint256 timeCondition, uint256 contributionCondition) public {
         /*Both initial and final profile should exists.*/
-        require(profiles[finalProfile]);
-        require(profiles[initialProfile]);
+        require(profiles[finalProfile],"The final profile does not exist");
+        require(profiles[initialProfile],"The initial profile does not exist");
 
         bytes32 _hash = keccak256(initialProfile,finalProfile);
         
+        require(!transitionRegister[_hash].initToFinalProfileExists,"The transition exists.");
+
         transitionRegister[_hash].initToFinalProfileExists = true;
         transitionRegister[_hash].requestedTime = timeCondition;
         transitionRegister[_hash].requestedContributions = contributionCondition;
-        emit AddTransition(msg.sender, initialProfile, finalProfile, timeCondition, contributionCondition);
+        emit AddTransition(msg.sender, initialProfile, finalProfile, timeCondition, contributionCondition,_hash);
     }
-
+    /**
+      * @notice Remove transition from profile "`@fromHex(initialProfile)`" to profile "`@fromHex(finalProfile)`"
+      * @param initialProfile Name of the  initial profile
+      * @param finalProfile Name of the final profile 
+      */
     function removeTransition(bytes32 initialProfile, bytes32 finalProfile) public {
         bytes32 _hash = keccak256(initialProfile,finalProfile);
-        require(transitionRegister[_hash].initToFinalProfileExists);
+        require(transitionRegister[_hash].initToFinalProfileExists,"The transition doesn't exist");
         transitionRegister[_hash].initToFinalProfileExists = false;
         emit RemoveTransition(msg.sender, initialProfile, finalProfile);
     }
+    /**
+      * @notice Change conditions from profile "`@fromHex(initialProfile)`" to profile "`@fromHex(finalProfile)`" with time "`timeCondition`" and contributions "`contributionCondition`"
+      * @param initialProfile Name of the profile to be added
+      * @param finalProfile sadas
+      * @param timeCondition asdasd
+      * @param contributionCondition asdad
+      */
+
     function changeConditions(bytes32 initialProfile, bytes32 finalProfile , uint256 timeCondition, uint256 contributionCondition) public {
         bytes32 _hash = keccak256(initialProfile,finalProfile);
-        require(transitionRegister[_hash].initToFinalProfileExists);
+        require(transitionRegister[_hash].initToFinalProfileExists,"The transition doesn't exist.");
+        require(timeCondition > 0, "The time has to be greater than zero");
+        require(contributionCondition >= 0,"Contributions that have to be greater than or equal to zero");
+
         transitionRegister[_hash].requestedTime = timeCondition;
         transitionRegister[_hash].requestedContributions = contributionCondition;
         emit ChangeConditions(msg.sender, initialProfile, finalProfile, timeCondition, contributionCondition);

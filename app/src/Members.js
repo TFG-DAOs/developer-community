@@ -71,7 +71,7 @@ export const Members = ({
             ):(<ToastHub>
                   <Toast>
                     {toast => (
-                      <Button onClick={() => toast("El miembro " + member + " puede transitar a ningún perfil")}>Assign</Button>
+                      <Button onClick={() => toast("Member " + member + " cannot switch to any profile")}>Assign</Button>
                     )}
                   </Toast>
                 </ToastHub>)}

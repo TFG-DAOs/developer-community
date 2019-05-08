@@ -8,7 +8,7 @@ const api = new AragonApi();
 
 const reducer = (state, event) => {
   let newState;
-  let defaultProfile = "Anonimo";
+  let defaultProfile = "Anonymous";
   console.log(state, event);
   switch (event.event) {
     case INITIALIZATION_TRIGGER:

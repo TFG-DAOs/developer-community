@@ -75,7 +75,7 @@ export const Transitions = ({
           ))}   
         </Table>
       ) : (
-          <Text> NO HAY TRANSICIONES A OTROS PERFILES</Text>
+          <Text> THERE ARE NO TRANSITIONS TO OTHER PROFILES</Text>
         )}
 
       <Button mode="strong" style={{textAlign: "center", width: "15%", marginTop:"2%"}}onClick={() => {
